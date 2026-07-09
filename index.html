@@ -1,1364 +1,1247 @@
-<style>
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background: #07080d;
-    color: #f5f5f5;
-    font-family: Arial, "Noto Sans KR", sans-serif;
-    overflow-x: hidden;
-  }
-  a { color: inherit; text-decoration: none; }
-  img { display: block; max-width: 100%; }
-
-  :root {
-    --bg: #07080d;
-    --bg-2: #0c1018;
-    --card: rgba(255,255,255,0.06);
-    --line: rgba(255,255,255,0.12);
-    --text-dim: rgba(255,255,255,0.68);
-    --brand: #be1726;
-    --brand-dark: #8f101c;
-    --white: #ffffff;
-    --shadow: 0 30px 90px rgba(0,0,0,0.25);
-    --radius: 28px;
-  }
-
-  .header {
-    position: fixed;
-    inset: 0 0 auto 0;
-    height: 78px;
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(7,8,13,0.75);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    z-index: 1000;
-  }
-
-  .brand-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    min-width: 0;
-  }
-
-  .brand-logo {
-    width: 120px;
-    height: 42px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    flex: 0 0 auto;
-  }
-
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .brand-text strong {
-    font-size: 15px;
-    letter-spacing: -0.02em;
-  }
-
-  .brand-text span {
-    font-size: 12px;
-    color: rgba(255,255,255,0.55);
-  }
-
-  nav {
-    display: flex;
-    gap: 24px;
-    color: rgba(255,255,255,0.72);
-    font-size: 14px;
-  }
-
-  nav a:hover { color: #fff; }
-
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    padding: 130px 8vw 90px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg, rgba(7,8,13,0.96), rgba(7,8,13,0.55), rgba(7,8,13,0.95)),
-      radial-gradient(circle at 70% 36%, rgba(190,23,38,0.38), transparent 25%),
-      radial-gradient(circle at 80% 62%, rgba(255,255,255,0.12), transparent 22%),
-      linear-gradient(135deg, #05060a, #182131 48%, #05060a);
-    background-size: cover;
-    background-position: center;
-    transform: scale(1);
-    transition: 0.2s linear;
-  }
-
-  .hero-overlay-image {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.34;
-    mix-blend-mode: screen;
-  }
-
-  .hero-gridline {
-    position: absolute;
-    inset: 12%;
-    border: 1px solid rgba(255,255,255,0.12);
-    transform: skewX(-14deg);
-    background:
-      linear-gradient(115deg, transparent 0 45%, rgba(255,255,255,0.16) 46%, transparent 49%),
-      linear-gradient(35deg, transparent 0 60%, rgba(190,23,38,0.22) 61%, transparent 64%);
-    opacity: 0.75;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 920px;
-    animation: heroIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  @keyframes heroIn {
-    from { opacity: 0; transform: translateY(70px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .eyebrow {
-    margin: 0 0 18px;
-    color: #ff7d88;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 0.16em;
-  }
-
-  .hero h1 {
-    margin: 0;
-    font-size: clamp(52px, 8vw, 104px);
-    line-height: 1.02;
-    letter-spacing: -0.075em;
-  }
-
-  .hero .desc {
-    max-width: 760px;
-    margin: 30px 0 0;
-    color: rgba(255,255,255,0.74);
-    font-size: 19px;
-    line-height: 1.8;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-top: 40px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 24px;
-    border-radius: 999px;
-    background: var(--brand);
-    color: #fff;
-    font-weight: 900;
-    border: 1px solid transparent;
-    transition: 0.25s ease;
-  }
-
-  .btn:hover {
-    transform: translateY(-2px);
-    background: var(--brand-dark);
-  }
-
-  .btn.outline {
-    background: transparent;
-    color: #fff;
-    border-color: rgba(255,255,255,0.22);
-  }
-
-  .btn.outline:hover {
-    background: rgba(255,255,255,0.08);
-  }
-
-  .scroll-hint {
-    position: absolute;
-    right: 42px;
-    bottom: 36px;
-    writing-mode: vertical-rl;
-    color: rgba(255,255,255,0.42);
-    font-size: 12px;
-    letter-spacing: 0.24em;
-    z-index: 2;
-  }
-
-  section { background: var(--bg); }
-  .section { padding: 120px 8vw; }
-
-  .section-head {
-    max-width: 860px;
-    margin-bottom: 52px;
-  }
-
-  .section-head h2 {
-    margin: 0;
-    font-size: clamp(34px, 5vw, 66px);
-    line-height: 1.08;
-    letter-spacing: -0.065em;
-  }
-
-  .section-head p:not(.eyebrow) {
-    color: var(--text-dim);
-    font-size: 17px;
-    line-height: 1.8;
-  }
-
-  .card-base {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-  }
-
-  .feature-card {
-    min-height: 300px;
-    padding: 32px;
-  }
-
-  .num {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #fff;
-    color: #07080d;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    margin-bottom: 40px;
-  }
-
-  .feature-card h3 {
-    margin: 0 0 14px;
-    font-size: 24px;
-    letter-spacing: -0.04em;
-  }
-
-  .feature-card p {
-    margin: 0;
-    color: var(--text-dim);
-    line-height: 1.75;
-  }
-
-  .story {
-    position: relative;
-    height: 380vh;
-    background: #05060a;
-  }
-
-  .story-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
-    padding: 0 8vw;
-    display: flex;
-    align-items: center;
-    background: #05060a;
-  }
-
-  .story-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 72% 36%, rgba(190,23,38,0.48), transparent 28%),
-      radial-gradient(circle at 28% 72%, rgba(255,255,255,0.12), transparent 25%),
-      linear-gradient(135deg, #05060a, #121721 48%, #05060a);
-    transform: scale(1.06);
-  }
-
-  .story-gridline {
-    position: absolute;
-    inset: 12%;
-    border: 1px solid rgba(255,255,255,0.14);
-    background:
-      linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.18) 47%, transparent 49%),
-      linear-gradient(35deg, transparent 0 61%, rgba(190,23,38,0.22) 62%, transparent 65%);
-    transform: skewX(-14deg);
-    opacity: 0.72;
-  }
-
-  .story-title {
-    position: relative;
-    z-index: 2;
-    max-width: 760px;
-    opacity: 0;
-    transform: translateY(80px) scale(0.94);
-    transition: 0.45s ease;
-  }
-
-  .story-title.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  .story-title h2 {
-    margin: 0;
-    font-size: clamp(44px, 7vw, 94px);
-    line-height: 1.04;
-    letter-spacing: -0.075em;
-  }
-
-  .story-title p:not(.eyebrow) {
-    max-width: 680px;
-    margin-top: 26px;
-    color: rgba(255,255,255,0.72);
-    font-size: 19px;
-    line-height: 1.8;
-  }
-
-  .story-card {
-    position: absolute;
-    z-index: 3;
-    width: min(360px, 32vw);
-    padding: 30px;
-    border-radius: 30px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.18);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 30px 90px rgba(0,0,0,0.35);
-    opacity: 0;
-    transform: translateY(90px) scale(0.86);
-    transition: 0.45s ease;
-  }
-
-  .story-card.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  .story-card h3 {
-    margin: 0 0 14px;
-    font-size: 28px;
-    letter-spacing: -0.045em;
-  }
-
-  .story-card p {
-    margin: 0;
-    color: rgba(255,255,255,0.68);
-    line-height: 1.72;
-  }
-
-  .story-card.card-1 { right: 12vw; top: 18vh; }
-  .story-card.card-2 { right: 29vw; bottom: 16vh; }
-  .story-card.card-3 { right: 8vw; bottom: 28vh; }
-  .story-card.card-4 { left: 9vw; bottom: 14vh; }
-
-  .viewer-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: stretch;
-  }
-
-  .viewer-box, .viewer-desc, .gs-box, .portfolio-card, .blog-card, .contact-box {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-
-  .viewer-box {
-    overflow: hidden;
-  }
-
-  .viewer-head {
-    padding: 18px 20px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .viewer-chip {
-    padding: 11px 15px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.72);
-    font-size: 13px;
-  }
-
-  .viewer-chip.active {
-    background: #fff;
-    color: #111;
-    font-weight: 900;
-  }
-
-  .viewer-stage {
-    min-height: 440px;
-    display: grid;
-    place-items: center;
-    padding: 24px;
-    background:
-      radial-gradient(circle at center, rgba(190,23,38,0.18), transparent 40%),
-      linear-gradient(135deg, #101828, #05060a);
-  }
-
-  .viewer-placeholder {
-    width: min(100%, 520px);
-    aspect-ratio: 1.2 / 1;
-    border-radius: 24px;
-    border: 1px dashed rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 26px;
-    text-align: center;
-    color: rgba(255,255,255,0.72);
-    line-height: 1.8;
-    background: rgba(255,255,255,0.03);
-  }
-
-  .viewer-caption {
-    padding: 18px 24px 22px;
-    color: rgba(255,255,255,0.54);
-    font-size: 13px;
-  }
-
-  .viewer-desc {
-    padding: 34px;
-  }
-
-  .viewer-desc h3 {
-    margin: 0 0 16px;
-    font-size: 30px;
-    letter-spacing: -0.04em;
-  }
-
-  .viewer-desc p,
-  .viewer-desc li {
-    color: var(--text-dim);
-    line-height: 1.8;
-  }
-
-  .viewer-desc ul {
-    padding-left: 20px;
-  }
-
-  .gs-box {
-    overflow: hidden;
-  }
-
-  .gs-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 18px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    flex-wrap: wrap;
-  }
-
-  .gs-topbar strong {
-    font-size: 18px;
-    letter-spacing: -0.02em;
-  }
-
-  .gs-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .mini-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 38px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.14);
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .mini-btn:hover {
-    background: rgba(255,255,255,0.13);
-  }
-
-  .gs-frame-wrap {
-    position: relative;
-    height: 720px;
-    background: #000;
-  }
-
-  .gs-frame {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #000;
-  }
-
-  .gs-note {
-    padding: 16px 20px 22px;
-    color: rgba(255,255,255,0.56);
-    font-size: 13px;
-    line-height: 1.7;
-  }
-
-  .compare-box {
-    position: relative;
-    height: 540px;
-    overflow: hidden;
-    border-radius: 30px;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(255,255,255,0.1);
-    background: linear-gradient(135deg, #666b74, #b5b8bd 42%, #656c74);
-  }
-
-  .before-layer, .after-layer {
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-  }
-
-  .after-layer {
-    width: 55%;
-    overflow: hidden;
-    border-right: 3px solid #fff;
-  }
-
-  .compare-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(rgba(0,0,0,0.14), rgba(0,0,0,0.14));
-    pointer-events: none;
-  }
-
-  .compare-label {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    z-index: 5;
-    padding: 10px 16px;
-    border-radius: 999px;
-    background: rgba(0,0,0,0.68);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 900;
-  }
-
-  .after-layer .compare-label {
-    left: 24px;
-  }
-
-  #compareRange {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: ew-resize;
-  }
-
-  .handle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 55%;
-    width: 3px;
-    background: #fff;
-    z-index: 9;
-    pointer-events: none;
-  }
-
-  .handle::after {
-    content: "↔";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 56px;
-    height: 56px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: #fff;
-    color: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.24);
-  }
-
-  .filters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 32px;
-  }
-
-  .filter {
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.74);
-    border-radius: 999px;
-    padding: 13px 18px;
-    cursor: pointer;
-  }
-
-  .filter.active {
-    background: #fff;
-    color: #111;
-    font-weight: 900;
-  }
-
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-
-  .portfolio-card {
-    overflow: hidden;
-    transition: 0.3s ease;
-  }
-
-  .portfolio-card:hover {
-    transform: translateY(-8px);
-  }
-
-  .portfolio-card.hide {
-    display: none;
-  }
-
-  .portfolio-thumb {
-    height: 260px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-  }
-
-  .portfolio-thumb::after {
-    content: "";
-    position: absolute;
-    inset: 18%;
-    border: 1px solid rgba(255,255,255,0.24);
-    transform: skewX(-10deg);
-  }
-
-  .portfolio-meta {
-    padding: 22px 24px 28px;
-  }
-
-  .portfolio-meta p {
-    margin: 0;
-    color: #ff7d88;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.13em;
-  }
-
-  .portfolio-meta h3 {
-    margin: 8px 0 0;
-    font-size: 22px;
-    letter-spacing: -0.04em;
-  }
-
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-
-  .blog-card {
-    padding: 30px;
-    transition: 0.3s ease;
-  }
-
-  .blog-card:hover {
-    transform: translateY(-6px);
-  }
-
-  .blog-card .tag {
-    display: inline-block;
-    padding: 8px 12px;
-    background: rgba(190,23,38,0.14);
-    color: #ff9fa7;
-    border: 1px solid rgba(190,23,38,0.32);
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 900;
-    margin-bottom: 18px;
-  }
-
-  .blog-card h3 {
-    margin: 0 0 12px;
-    font-size: 24px;
-    letter-spacing: -0.04em;
-  }
-
-  .blog-card p {
-    margin: 0;
-    color: var(--text-dim);
-    line-height: 1.75;
-  }
-
-  .contact-box {
-    padding: 56px;
-    max-width: 920px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .contact-box h2 {
-    margin: 0;
-    font-size: clamp(36px, 5vw, 62px);
-    letter-spacing: -0.06em;
-  }
-
-  .contact-box p {
-    color: var(--text-dim);
-    line-height: 1.8;
-  }
-
-  footer {
-    padding: 34px;
-    text-align: center;
-    color: rgba(255,255,255,0.42);
-    background: #05060a;
-    font-size: 13px;
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(90px) scale(0.94);
-    filter: blur(12px);
-    transition:
-      opacity 0.9s ease,
-      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.9s ease;
-  }
-
-  .reveal.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-
-  @media (max-width: 1200px) {
-    .features-grid { grid-template-columns: repeat(2, 1fr); }
-    .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
-    .blog-grid { grid-template-columns: repeat(2, 1fr); }
-    .viewer-layout { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 760px) {
-    .header {
-      padding: 0 18px;
-      height: 72px;
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JNC DESIGN Homepage Demo</title>
+
+  <!-- 3D GLB viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #07080d;
+      color: #f5f5f5;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    :root {
+      --bg: #07080d;
+      --bg2: #0d111a;
+      --card: rgba(255,255,255,0.065);
+      --line: rgba(255,255,255,0.13);
+      --dim: rgba(255,255,255,0.68);
+      --brand: #be1726;
+      --brand2: #8e111d;
+      --shadow: 0 30px 90px rgba(0,0,0,0.26);
+      --radius: 30px;
     }
 
-    nav { display: none; }
+    .header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 78px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7,8,13,0.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 1000;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
 
     .brand-logo {
-      width: 90px;
-      height: 34px;
+      width: 122px;
+      height: 42px;
+      background: url("./assets/logo.png") center / contain no-repeat;
+      flex: 0 0 auto;
     }
 
-    .brand-text strong {
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-copy strong {
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-copy span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.54);
+    }
+
+    nav {
+      display: flex;
+      gap: 24px;
+      color: rgba(255,255,255,0.72);
+      font-size: 14px;
+    }
+    nav a:hover { color: #fff; }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 130px 8vw 90px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(7,8,13,0.96), rgba(7,8,13,0.55), rgba(7,8,13,0.96)),
+        radial-gradient(circle at 70% 36%, rgba(190,23,38,0.42), transparent 27%),
+        radial-gradient(circle at 80% 62%, rgba(255,255,255,0.12), transparent 22%),
+        url("./assets/portfolio_01.jpg") center / cover no-repeat;
+      transform: scale(1);
+      transition: 0.2s linear;
+    }
+
+    .hero-bg::after {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background:
+        linear-gradient(115deg, transparent 0 45%, rgba(255,255,255,0.16) 46%, transparent 49%),
+        linear-gradient(35deg, transparent 0 60%, rgba(190,23,38,0.22) 61%, transparent 64%);
+      transform: skewX(-14deg);
+      opacity: 0.75;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 920px;
+      animation: heroIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(70px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: #ff7d88;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(52px, 8vw, 104px);
+      line-height: 1.02;
+      letter-spacing: -0.075em;
+    }
+
+    .hero .desc {
+      max-width: 760px;
+      margin: 30px 0 0;
+      color: rgba(255,255,255,0.74);
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 24px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 900;
+      border: 1px solid transparent;
+      transition: 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: var(--brand2);
+    }
+
+    .btn.outline {
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    .btn.outline:hover { background: rgba(255,255,255,0.08); }
+
+    .scroll-hint {
+      position: absolute;
+      right: 42px;
+      bottom: 36px;
+      writing-mode: vertical-rl;
+      color: rgba(255,255,255,0.42);
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      z-index: 2;
+    }
+
+    section { background: var(--bg); }
+    .section { padding: 120px 8vw; }
+
+    .section-head {
+      max-width: 860px;
+      margin-bottom: 52px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 66px);
+      line-height: 1.08;
+      letter-spacing: -0.065em;
+    }
+
+    .section-head p:not(.eyebrow) {
+      color: var(--dim);
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .feature-card {
+      min-height: 300px;
+      padding: 32px;
+    }
+
+    .num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      color: #07080d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      margin-bottom: 40px;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--dim);
+      line-height: 1.75;
+    }
+
+    .story {
+      position: relative;
+      height: 380vh;
+      background: #05060a;
+    }
+
+    .story-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      padding: 0 8vw;
+      display: flex;
+      align-items: center;
+      background: #05060a;
+    }
+
+    .story-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 72% 36%, rgba(190,23,38,0.48), transparent 28%),
+        radial-gradient(circle at 28% 72%, rgba(255,255,255,0.12), transparent 25%),
+        linear-gradient(135deg, #05060a, #121721 48%, #05060a);
+      transform: scale(1.06);
+    }
+
+    .story-gridline {
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background:
+        linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.18) 47%, transparent 49%),
+        linear-gradient(35deg, transparent 0 61%, rgba(190,23,38,0.22) 62%, transparent 65%);
+      transform: skewX(-14deg);
+      opacity: 0.72;
+    }
+
+    .story-title {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      opacity: 0;
+      transform: translateY(80px) scale(0.94);
+      transition: 0.45s ease;
+    }
+
+    .story-title.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .story-title h2 {
+      margin: 0;
+      font-size: clamp(44px, 7vw, 94px);
+      line-height: 1.04;
+      letter-spacing: -0.075em;
+    }
+
+    .story-title p:not(.eyebrow) {
+      max-width: 680px;
+      margin-top: 26px;
+      color: rgba(255,255,255,0.72);
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    .story-card {
+      position: absolute;
+      z-index: 3;
+      width: min(360px, 32vw);
+      padding: 30px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+      opacity: 0;
+      transform: translateY(90px) scale(0.86);
+      transition: 0.45s ease;
+    }
+
+    .story-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .story-card h3 {
+      margin: 0 0 14px;
+      font-size: 28px;
+      letter-spacing: -0.045em;
+    }
+
+    .story-card p {
+      margin: 0;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.72;
+    }
+
+    .story-card.card-1 { right: 12vw; top: 18vh; }
+    .story-card.card-2 { right: 29vw; bottom: 16vh; }
+    .story-card.card-3 { right: 8vw; bottom: 28vh; }
+    .story-card.card-4 { left: 9vw; bottom: 14vh; }
+
+    .viewer-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .viewer-box, .viewer-desc, .gs-box, .portfolio-card, .blog-card, .contact-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .viewer-box { overflow: hidden; }
+
+    .viewer-head {
+      padding: 18px 20px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .viewer-chip {
+      padding: 11px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.72);
       font-size: 13px;
     }
 
-    .hero, .section {
-      padding-left: 22px;
-      padding-right: 22px;
+    .viewer-chip.active {
+      background: #fff;
+      color: #111;
+      font-weight: 900;
     }
 
-    .features-grid,
-    .portfolio-grid,
-    .blog-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .story { height: auto; }
-
-    .story-sticky {
-      position: relative;
-      height: auto;
-      min-height: 100vh;
-      display: block;
-      padding: 110px 22px;
-    }
-
-    .story-title,
-    .story-card {
-      position: relative;
+    model-viewer {
       width: 100%;
-      inset: auto;
-      opacity: 1;
-      transform: none;
-      margin-top: 18px;
+      height: 560px;
+      background:
+        radial-gradient(circle at center, rgba(190,23,38,0.18), transparent 40%),
+        linear-gradient(135deg, #101828, #05060a);
+      --poster-color: transparent;
     }
 
-    .story-title { margin-bottom: 34px; }
+    .viewer-caption {
+      padding: 18px 24px 22px;
+      color: rgba(255,255,255,0.54);
+      font-size: 13px;
+    }
 
-    .gs-frame-wrap { height: 420px; }
+    .viewer-desc {
+      padding: 34px;
+    }
 
-    .compare-box { height: 360px; }
+    .viewer-desc h3 {
+      margin: 0 0 16px;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+    }
 
-    .contact-box { padding: 34px 24px; }
-  }
-</style>
+    .viewer-desc p,
+    .viewer-desc li {
+      color: var(--dim);
+      line-height: 1.8;
+    }
 
-<!-- =========================
-     ASSET URL 설정
-     CodePen Assets 업로드 후 아래 값만 바꾸세요
-========================= -->
-<script>
-  const assets = {
-    logo: "/JNCD CI-02.png",
-    heroImage: "PASTE_PORTFOLIO_1_URL_HERE",
-    beforeImage: "PASTE_PORTFOLIO_2_URL_HERE",
-    afterImage: "PASTE_PORTFOLIO_1_URL_HERE",
-    p1: "PASTE_PORTFOLIO_1_URL_HERE",
-    p2: "PASTE_PORTFOLIO_2_URL_HERE",
-    p3: "PASTE_PORTFOLIO_3_URL_HERE",
-    p4: "PASTE_PORTFOLIO_4_URL_HERE",
-    p5: "PASTE_PORTFOLIO_5_URL_HERE",
-    p6: "PASTE_PORTFOLIO_6_URL_HERE",
-    blogUrl: "https://blog.naver.com/jnc-design",
-    gsUrl: "https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097"
-  };
-</script>
+    .viewer-desc ul { padding-left: 20px; }
 
-<header class="header">
-  <div class="brand-wrap">
-    <div class="brand-logo" id="brandLogo"></div>
-    <div class="brand-text">
-      <strong>(주)제이엔씨디자인</strong>
-      <span>JNC DESIGN</span>
-    </div>
-  </div>
+    .gs-box { overflow: hidden; }
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#features">Features</a>
-    <a href="#story">Scroll</a>
-    <a href="#viewer">3D</a>
-    <a href="#gaussian">Gaussian</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#blog">Blog</a>
-  </nav>
-</header>
+    .gs-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+    }
 
-<main>
-  <section id="home" class="hero">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-overlay-image" id="heroOverlay"></div>
-    <div class="hero-gridline"></div>
+    .gs-topbar strong {
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
 
-    <div class="hero-content" id="heroContent">
-      <p class="eyebrow">INTERACTIVE HOMEPAGE RENEWAL</p>
-      <h1>
-        공간을 설계하고,<br>
-        현장을 체험하게 만듭니다.
-      </h1>
-      <p class="desc">
-        (주)제이엔씨디자인의 상징조형물, 경관디자인, 야간경관, 공간연출 프로젝트를
-        이미지 중심 포트폴리오를 넘어 3D Viewer, Gaussian Splatting, 스크롤 애니메이션으로
-        확장한 데모 홈페이지입니다.
-      </p>
-      <div class="hero-actions">
-        <a href="#portfolio" class="btn">포트폴리오 보기</a>
-        <a href="#gaussian" class="btn outline">가우시안 스플래팅 보기</a>
+    .gs-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .mini-btn:hover { background: rgba(255,255,255,0.13); }
+
+    .gs-frame-wrap {
+      position: relative;
+      height: 720px;
+      background: #000;
+    }
+
+    .gs-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+    }
+
+    .gs-note {
+      padding: 16px 20px 22px;
+      color: rgba(255,255,255,0.56);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .compare-box {
+      position: relative;
+      height: 540px;
+      overflow: hidden;
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #111;
+    }
+
+    .before-layer, .after-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .before-layer { background-image: url("./assets/portfolio_02.jpg"); }
+    .after-layer {
+      width: 55%;
+      overflow: hidden;
+      border-right: 3px solid #fff;
+      background-image: url("./assets/portfolio_01.jpg");
+    }
+
+    .compare-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(0,0,0,0.14), rgba(0,0,0,0.14));
+      pointer-events: none;
+    }
+
+    .compare-label {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      z-index: 5;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.68);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    #compareRange {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: ew-resize;
+    }
+
+    .handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 55%;
+      width: 3px;
+      background: #fff;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .handle::after {
+      content: "↔";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 56px;
+      height: 56px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #fff;
+      color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.24);
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter {
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.74);
+      border-radius: 999px;
+      padding: 13px 18px;
+      cursor: pointer;
+    }
+
+    .filter.active {
+      background: #fff;
+      color: #111;
+      font-weight: 900;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .portfolio-card {
+      overflow: hidden;
+      transition: 0.3s ease;
+    }
+
+    .portfolio-card:hover { transform: translateY(-8px); }
+    .portfolio-card.hide { display: none; }
+
+    .portfolio-thumb {
+      height: 260px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .portfolio-thumb::after {
+      content: "";
+      position: absolute;
+      inset: 18%;
+      border: 1px solid rgba(255,255,255,0.24);
+      transform: skewX(-10deg);
+    }
+
+    .thumb1 { background-image: url("./assets/portfolio_01.jpg"); }
+    .thumb2 { background-image: url("./assets/portfolio_02.jpg"); }
+    .thumb3 { background-image: url("./assets/portfolio_03.jpg"); }
+    .thumb4 { background-image: url("./assets/portfolio_04.jpg"); }
+    .thumb5 { background-image: url("./assets/portfolio_05.jpg"); }
+    .thumb6 { background-image: url("./assets/portfolio_06.jpg"); }
+
+    .portfolio-meta {
+      padding: 22px 24px 28px;
+    }
+
+    .portfolio-meta p {
+      margin: 0;
+      color: #ff7d88;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+    }
+
+    .portfolio-meta h3 {
+      margin: 8px 0 0;
+      font-size: 22px;
+      letter-spacing: -0.04em;
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .blog-card {
+      padding: 30px;
+      transition: 0.3s ease;
+    }
+
+    .blog-card:hover { transform: translateY(-6px); }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 12px;
+      background: rgba(190,23,38,0.14);
+      color: #ff9fa7;
+      border: 1px solid rgba(190,23,38,0.32);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .blog-card h3 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .blog-card p {
+      margin: 0;
+      color: var(--dim);
+      line-height: 1.75;
+    }
+
+    .contact-box {
+      padding: 56px;
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-box h2 {
+      margin: 0;
+      font-size: clamp(36px, 5vw, 62px);
+      letter-spacing: -0.06em;
+    }
+
+    .contact-box p {
+      color: var(--dim);
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 34px;
+      text-align: center;
+      color: rgba(255,255,255,0.42);
+      background: #05060a;
+      font-size: 13px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(90px) scale(0.94);
+      filter: blur(12px);
+      transition:
+        opacity 0.9s ease,
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.9s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
+    @media (max-width: 1200px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+      .blog-grid { grid-template-columns: repeat(2, 1fr); }
+      .viewer-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .header {
+        padding: 0 18px;
+        height: 72px;
+      }
+
+      nav { display: none; }
+
+      .brand-logo {
+        width: 90px;
+        height: 34px;
+      }
+
+      .brand-copy strong { font-size: 13px; }
+
+      .hero, .section {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .features-grid,
+      .portfolio-grid,
+      .blog-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .story { height: auto; }
+
+      .story-sticky {
+        position: relative;
+        height: auto;
+        min-height: 100vh;
+        display: block;
+        padding: 110px 22px;
+      }
+
+      .story-title,
+      .story-card {
+        position: relative;
+        width: 100%;
+        inset: auto;
+        opacity: 1;
+        transform: none;
+        margin-top: 18px;
+      }
+
+      .story-title { margin-bottom: 34px; }
+
+      .gs-frame-wrap { height: 420px; }
+      .compare-box { height: 360px; }
+      .contact-box { padding: 34px 24px; }
+      model-viewer { height: 420px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <div class="brand-copy">
+        <strong>(주)제이엔씨디자인</strong>
+        <span>JNC DESIGN</span>
       </div>
     </div>
 
-    <div class="scroll-hint">SCROLL</div>
-  </section>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#story">Scroll</a>
+      <a href="#viewer">3D</a>
+      <a href="#gaussian">Gaussian</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#blog">Blog</a>
+    </nav>
+  </header>
 
-  <section id="features" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">RENEWAL KEY POINT</p>
-      <h2>리뉴얼 핵심 기능</h2>
-      <p>
-        단순 소개형 홈페이지가 아니라, 사용자가 회사의 결과물과 기술력을 직접 경험하는
-        체험형 웹사이트 구조를 목표로 합니다.
-      </p>
-    </div>
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-bg" id="heroBg"></div>
 
-    <div class="features-grid">
-      <article class="feature-card card-base reveal">
-        <span class="num">01</span>
-        <h3>3D Viewer</h3>
-        <p>대표 조형물 모델을 회전·확대하며 볼 수 있는 인터랙티브 뷰어 영역입니다.</p>
-      </article>
+      <div class="hero-content" id="heroContent">
+        <p class="eyebrow">INTERACTIVE HOMEPAGE RENEWAL</p>
+        <h1>
+          공간을 설계하고,<br>
+          현장을 체험하게 만듭니다.
+        </h1>
+        <p class="desc">
+          (주)제이엔씨디자인의 상징조형물, 경관디자인, 야간경관, 공간연출 프로젝트를
+          이미지 중심 포트폴리오를 넘어 3D Viewer, Gaussian Splatting, 스크롤 애니메이션으로
+          확장한 데모 홈페이지입니다.
+        </p>
+        <div class="hero-actions">
+          <a href="#portfolio" class="btn">포트폴리오 보기</a>
+          <a href="#gaussian" class="btn outline">가우시안 스플래팅 보기</a>
+        </div>
+      </div>
 
-      <article class="feature-card card-base reveal">
-        <span class="num">02</span>
-        <h3>Gaussian Splatting</h3>
-        <p>실제 현장을 3D처럼 둘러보는 공간형 콘텐츠를 홈페이지 안에서 직접 보여줍니다.</p>
-      </article>
+      <div class="scroll-hint">SCROLL</div>
+    </section>
 
-      <article class="feature-card card-base reveal">
-        <span class="num">03</span>
-        <h3>Scroll Story</h3>
-        <p>스크롤 흐름에 맞춰 회사의 기획력과 기술 요소가 순차적으로 노출됩니다.</p>
-      </article>
-
-      <article class="feature-card card-base reveal">
-        <span class="num">04</span>
-        <h3>Blog Connection</h3>
-        <p>현재 운영 중인 블로그를 회사 홍보 채널로 연결해 콘텐츠 확장성을 높입니다.</p>
-      </article>
-    </div>
-  </section>
-
-  <section id="story" class="story">
-    <div class="story-sticky">
-      <div class="story-bg" id="storyBg"></div>
-      <div class="story-gridline"></div>
-
-      <div class="story-title" id="storyTitle">
-        <p class="eyebrow">SCROLL EXPERIENCE</p>
-        <h2>
-          스크롤만으로도<br>
-          회사의 역량이 전달됩니다.
-        </h2>
+    <section id="features" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">RENEWAL KEY POINT</p>
+        <h2>리뉴얼 핵심 기능</h2>
         <p>
-          포트폴리오 소개, 3D 경험, 실사형 공간 뷰어, 외부 채널 연결까지
-          하나의 흐름 안에서 자연스럽게 보여줍니다.
+          단순 소개형 홈페이지가 아니라, 사용자가 회사의 결과물과 기술력을 직접 경험하는
+          체험형 웹사이트 구조를 목표로 합니다.
         </p>
       </div>
 
-      <div class="story-card card-1" id="storyCard1">
-        <span class="num">01</span>
-        <h3>조형물 / 경관</h3>
-        <p>대표 프로젝트 이미지를 중심으로 회사가 수행한 주요 분야를 직관적으로 소개합니다.</p>
+      <div class="features-grid">
+        <article class="feature-card card reveal">
+          <span class="num">01</span>
+          <h3>3D Viewer</h3>
+          <p>대표 조형물 모델을 회전·확대하며 볼 수 있는 인터랙티브 뷰어 영역입니다.</p>
+        </article>
+
+        <article class="feature-card card reveal">
+          <span class="num">02</span>
+          <h3>Gaussian Splatting</h3>
+          <p>실제 현장을 3D처럼 둘러보는 공간형 콘텐츠를 홈페이지 안에서 직접 보여줍니다.</p>
+        </article>
+
+        <article class="feature-card card reveal">
+          <span class="num">03</span>
+          <h3>Scroll Story</h3>
+          <p>스크롤 흐름에 맞춰 회사의 기획력과 기술 요소가 순차적으로 노출됩니다.</p>
+        </article>
+
+        <article class="feature-card card reveal">
+          <span class="num">04</span>
+          <h3>Blog Connection</h3>
+          <p>현재 운영 중인 블로그를 회사 홍보 채널로 연결해 콘텐츠 확장성을 높입니다.</p>
+        </article>
       </div>
+    </section>
 
-      <div class="story-card card-2" id="storyCard2">
-        <span class="num">02</span>
-        <h3>3D 모델</h3>
-        <p>완성된 결과물뿐 아니라 모델 기반의 구조 이해까지 가능하도록 확장합니다.</p>
-      </div>
+    <section id="story" class="story">
+      <div class="story-sticky">
+        <div class="story-bg" id="storyBg"></div>
+        <div class="story-gridline"></div>
 
-      <div class="story-card card-3" id="storyCard3">
-        <span class="num">03</span>
-        <h3>GS 공간 체험</h3>
-        <p>가우시안 스플래팅 데모를 통해 실제 공간을 브라우저 안에서 체험하게 합니다.</p>
-      </div>
-
-      <div class="story-card card-4" id="storyCard4">
-        <span class="num">04</span>
-        <h3>브랜드 확장</h3>
-        <p>블로그 등 외부 채널과 연계해 회사의 레퍼런스와 콘텐츠를 더 깊게 탐색하게 합니다.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="viewer" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">3D PROJECT VIEWER</p>
-      <h2>3D 모델 뷰어 영역</h2>
-      <p>
-        현재 확보된 3D 파일은 FBX 형식입니다. 이 데모에서는 우선 뷰어 영역과 설명 구조를 반영하고,
-        이후 GLB/GLTF 변환 시 실제 웹 회전형 모델 뷰어로 확장하는 방식이 가장 안정적입니다.
-      </p>
-    </div>
-
-    <div class="viewer-layout">
-      <div class="viewer-box reveal">
-        <div class="viewer-head">
-          <span class="viewer-chip active">FBX Model Ready</span>
-          <span class="viewer-chip">Interactive Slot</span>
-          <span class="viewer-chip">Future GLB Viewer</span>
+        <div class="story-title" id="storyTitle">
+          <p class="eyebrow">SCROLL EXPERIENCE</p>
+          <h2>
+            스크롤만으로도<br>
+            회사의 역량이 전달됩니다.
+          </h2>
+          <p>
+            포트폴리오 소개, 3D 경험, 실사형 공간 뷰어, 외부 채널 연결까지
+            하나의 흐름 안에서 자연스럽게 보여줍니다.
+          </p>
         </div>
 
-        <div class="viewer-stage">
-          <div class="viewer-placeholder">
-            <div>
-              <strong style="display:block;font-size:22px;margin-bottom:10px;">JNCD_Modeling.fbx</strong>
-              <span>
-                현재 업로드된 3D 파일은 FBX 형식입니다.<br>
-                데모 단계에서는 3D Viewer 섹션 레이아웃을 반영하고,<br>
-                차후 GLB 변환 시 브라우저 안에서 직접 회전하는 모델 뷰어로 교체 가능합니다.
-              </span>
-            </div>
+        <div class="story-card card-1" id="storyCard1">
+          <span class="num">01</span>
+          <h3>조형물 / 경관</h3>
+          <p>대표 프로젝트 이미지를 중심으로 회사가 수행한 주요 분야를 직관적으로 소개합니다.</p>
+        </div>
+
+        <div class="story-card card-2" id="storyCard2">
+          <span class="num">02</span>
+          <h3>3D 모델</h3>
+          <p>완성된 결과물뿐 아니라 모델 기반의 구조 이해까지 가능하도록 확장합니다.</p>
+        </div>
+
+        <div class="story-card card-3" id="storyCard3">
+          <span class="num">03</span>
+          <h3>GS 공간 체험</h3>
+          <p>가우시안 스플래팅 데모를 통해 실제 공간을 브라우저 안에서 체험하게 합니다.</p>
+        </div>
+
+        <div class="story-card card-4" id="storyCard4">
+          <span class="num">04</span>
+          <h3>브랜드 확장</h3>
+          <p>블로그 등 외부 채널과 연계해 회사의 레퍼런스와 콘텐츠를 더 깊게 탐색하게 합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="viewer" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">3D PROJECT VIEWER</p>
+        <h2>실제 GLB 모델 뷰어</h2>
+        <p>
+          업로드한 GLB 파일을 활용해 브라우저 안에서 직접 회전·확대 가능한 3D Viewer 영역을 구성했습니다.
+        </p>
+      </div>
+
+      <div class="viewer-layout">
+        <div class="viewer-box reveal">
+          <div class="viewer-head">
+            <span class="viewer-chip active">GLB Model</span>
+            <span class="viewer-chip">Camera Controls</span>
+            <span class="viewer-chip">Auto Rotate</span>
+          </div>
+
+          <model-viewer
+            src="./assets/JNCD_modeling.glb"
+            alt="JNC DESIGN 3D model"
+            camera-controls
+            auto-rotate
+            shadow-intensity="1"
+            exposure="1"
+            interaction-prompt="auto"
+            loading="lazy"
+            ar>
+          </model-viewer>
+
+          <div class="viewer-caption">
+            마우스로 드래그하면 모델을 회전할 수 있고, 휠로 확대/축소할 수 있습니다.
           </div>
         </div>
 
-        <div class="viewer-caption">
-          현재는 구조 반영 단계입니다. 실제 웹 3D 회전형 뷰는 GLB/GLTF 전환 후 구현 권장.
+        <div class="viewer-desc reveal">
+          <h3>적용 포인트</h3>
+          <ul>
+            <li>회사 기술력을 단순 이미지가 아닌 모델 기반 소개로 확장</li>
+            <li>조형물의 입체 구조와 비례를 이해하기 쉬운 방식으로 표현</li>
+            <li>프로젝트별 GLB 파일로 교체 가능한 공통 3D 영역 구성</li>
+            <li>보고용 데모에서 실제 홈페이지 구현 방향까지 설명 가능</li>
+          </ul>
         </div>
       </div>
+    </section>
 
-      <div class="viewer-desc reveal">
-        <h3>적용 포인트</h3>
-        <ul>
-          <li>회사 기술력을 단순 이미지가 아닌 모델 기반 소개로 확장</li>
-          <li>조형물의 입체 구조와 비례를 이해하기 쉬운 방식으로 표현</li>
-          <li>향후 프로젝트별 3D 파일로 교체 가능한 공통 영역 구성</li>
-          <li>보고용 데모 → 실 서비스 구조로 이어질 수 있는 섹션 설계</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="gaussian" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">GAUSSIAN SPLATTING DEMO</p>
-      <h2>홈페이지 안에서 보는 공간 체험 콘텐츠</h2>
-      <p>
-        사용자가 새 창으로 나가지 않고도, 홈페이지 안에서 바로 가우시안 스플래팅 데모를 감상할 수 있도록
-        iframe 형태의 섹션으로 구성했습니다.
-      </p>
-    </div>
-
-    <div class="gs-box reveal">
-      <div class="gs-topbar">
-        <strong>D5 Render Gaussian Splatting Viewer</strong>
-        <div class="gs-actions">
-          <a class="mini-btn" id="openGsBtn" href="#" target="_blank">원본 링크 열기</a>
-          <a class="mini-btn" href="#portfolio">포트폴리오 보기</a>
-        </div>
+    <section id="gaussian" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">GAUSSIAN SPLATTING DEMO</p>
+        <h2>홈페이지 안에서 보는 공간 체험 콘텐츠</h2>
+        <p>
+          사용자가 새 창으로 나가지 않고도, 홈페이지 안에서 바로 가우시안 스플래팅 데모를 감상할 수 있도록
+          iframe 형태의 섹션으로 구성했습니다.
+        </p>
       </div>
 
-      <div class="gs-frame-wrap">
-        <iframe
-          class="gs-frame"
-          id="gsFrame"
-          src=""
-          loading="lazy"
-          allowfullscreen
-          referrerpolicy="no-referrer"
-        ></iframe>
+      <div class="gs-box reveal">
+        <div class="gs-topbar">
+          <strong>D5 Render Gaussian Splatting Viewer</strong>
+          <div class="gs-actions">
+            <a class="mini-btn" href="https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097" target="_blank">원본 링크 열기</a>
+            <a class="mini-btn" href="#portfolio">포트폴리오 보기</a>
+          </div>
+        </div>
+
+        <div class="gs-frame-wrap">
+          <iframe
+            class="gs-frame"
+            src="https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer">
+          </iframe>
+        </div>
+
+        <div class="gs-note">
+          ※ 이 섹션은 홈페이지 내부 삽입 구조로 구현되어 있습니다. 실제 표시 여부는 D5 Render 측 임베드 정책에 따라 달라질 수 있습니다.
+        </div>
+      </div>
+    </section>
+
+    <section id="compare" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">BEFORE & AFTER</p>
+        <h2>현장 전후 비교 섹션 예시</h2>
+        <p>
+          대표 프로젝트 이미지를 비교 슬라이더로 보여주어, 디자인 적용 전후의 차이를 한눈에 전달할 수 있습니다.
+        </p>
       </div>
 
-      <div class="gs-note">
-        ※ 이 섹션은 홈페이지 내부 삽입 구조로 구현되어 있습니다.  
-        다만 실제 iframe 표시 여부는 D5 Render 측 임베드 정책에 따라 달라질 수 있습니다.
-        본 환경에서는 직접 검증이 되지 않아 확실하지 않음.
+      <div class="compare-box reveal">
+        <div class="before-layer">
+          <div class="compare-overlay"></div>
+          <div class="compare-label">BEFORE</div>
+        </div>
+
+        <div class="after-layer" id="afterLayer">
+          <div class="compare-overlay"></div>
+          <div class="compare-label">AFTER</div>
+        </div>
+
+        <input id="compareRange" type="range" min="0" max="100" value="55">
+        <div class="handle" id="handle"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="compare" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">BEFORE & AFTER</p>
-      <h2>현장 전후 비교 섹션 예시</h2>
-      <p>
-        대표 프로젝트 이미지를 비교 슬라이더로 보여주어, 디자인 적용 전후의 차이를 한눈에 전달할 수 있습니다.
-      </p>
-    </div>
-
-    <div class="compare-box reveal">
-      <div class="before-layer" id="beforeLayer">
-        <div class="compare-overlay"></div>
-        <div class="compare-label">BEFORE</div>
-      </div>
-
-      <div class="after-layer" id="afterLayer">
-        <div class="compare-overlay"></div>
-        <div class="compare-label">AFTER</div>
+    <section id="portfolio" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">REPRESENTATIVE PORTFOLIO</p>
+        <h2>대표 포트폴리오</h2>
+        <p>
+          상징조형물, 공공경관, 야간조명, 지역 상징공간 등 회사의 대표 프로젝트를 분류형으로 보여주는 영역입니다.
+        </p>
       </div>
 
-      <input id="compareRange" type="range" min="0" max="100" value="55">
-      <div class="handle" id="handle"></div>
-    </div>
-  </section>
-
-  <section id="portfolio" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">REPRESENTATIVE PORTFOLIO</p>
-      <h2>대표 포트폴리오</h2>
-      <p>
-        상징조형물, 공공경관, 야간조명, 지역 상징공간 등 회사의 대표 프로젝트를 분류형으로 보여주는 영역입니다.
-      </p>
-    </div>
-
-    <div class="filters reveal">
-      <button class="filter active" data-filter="all">전체</button>
-      <button class="filter" data-filter="landmark">상징조형물</button>
-      <button class="filter" data-filter="landscape">경관디자인</button>
-      <button class="filter" data-filter="night">야간경관</button>
-      <button class="filter" data-filter="public">공공공간</button>
-    </div>
-
-    <div class="portfolio-grid">
-      <article class="portfolio-card reveal" data-category="night landmark">
-        <div class="portfolio-thumb" id="thumb1"></div>
-        <div class="portfolio-meta">
-          <p>LANDMARK / NIGHT VIEW</p>
-          <h3>전망시설 및 야간 경관 연출</h3>
-        </div>
-      </article>
-
-      <article class="portfolio-card reveal" data-category="public landscape">
-        <div class="portfolio-thumb" id="thumb2"></div>
-        <div class="portfolio-meta">
-          <p>PUBLIC / LANDSCAPE</p>
-          <h3>지역 상징형 공공 구조물</h3>
-        </div>
-      </article>
-
-      <article class="portfolio-card reveal" data-category="night public">
-        <div class="portfolio-thumb" id="thumb3"></div>
-        <div class="portfolio-meta">
-          <p>PUBLIC / NIGHT</p>
-          <h3>상권 활성화 거리 조형 및 야간 연출</h3>
-        </div>
-      </article>
-
-      <article class="portfolio-card reveal" data-category="night landscape">
-        <div class="portfolio-thumb" id="thumb4"></div>
-        <div class="portfolio-meta">
-          <p>LANDSCAPE / NIGHT</p>
-          <h3>공원 경관 조명 및 포토존</h3>
-        </div>
-      </article>
-
-      <article class="portfolio-card reveal" data-category="public night">
-        <div class="portfolio-thumb" id="thumb5"></div>
-        <div class="portfolio-meta">
-          <p>PUBLIC SPACE</p>
-          <h3>공공공간 아치형 조형 연출</h3>
-        </div>
-      </article>
-
-      <article class="portfolio-card reveal" data-category="landmark night">
-        <div class="portfolio-thumb" id="thumb6"></div>
-        <div class="portfolio-meta">
-          <p>SCULPTURE / NIGHT</p>
-          <h3>도시형 금속 상징조형물</h3>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section id="blog" class="section">
-    <div class="section-head reveal">
-      <p class="eyebrow">BLOG CONNECTION</p>
-      <h2>블로그와 연결되는 콘텐츠 허브</h2>
-      <p>
-        현재 운영 중인 블로그를 회사의 공식 콘텐츠 채널로 활용해,
-        프로젝트 소개와 회사 소식을 자연스럽게 확장할 수 있습니다.
-      </p>
-    </div>
-
-    <div class="blog-grid">
-      <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
-        <span class="tag">NAVER BLOG</span>
-        <h3>회사 공식 블로그 바로가기</h3>
-        <p>프로젝트 소개, 작업 사례, 회사 소식 등을 연결하는 공식 외부 채널입니다.</p>
-      </a>
-
-      <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
-        <span class="tag">PROJECT STORY</span>
-        <h3>프로젝트 비하인드 콘텐츠</h3>
-        <p>홈페이지에서 다 담지 못하는 제안 배경과 과정 설명을 블로그에서 확장할 수 있습니다.</p>
-      </a>
-
-      <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
-        <span class="tag">BRAND CHANNEL</span>
-        <h3>브랜드 신뢰도 강화</h3>
-        <p>홈페이지 방문자가 추가 자료를 탐색할 수 있도록 자연스러운 외부 채널 동선을 구성합니다.</p>
-      </a>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="contact-box reveal">
-      <p class="eyebrow">NEXT STEP</p>
-      <h2>실제 자료 기반 1차 데모 반영 완료</h2>
-      <p>
-        이번 버전은 회사명, 로고, 블로그 채널, 대표 포트폴리오, 3D 모델 구조,
-        그리고 가우시안 스플래팅 iframe 섹션을 반영한 실제 데모 초안입니다.
-        다음 단계에서는 이미지 URL 교체와 세부 문구 수정으로 완성도를 더 높이면 됩니다.
-      </p>
-      <div class="hero-actions" style="justify-content:center;">
-        <a href="#home" class="btn">처음으로</a>
-        <a href="#gaussian" class="btn outline">GS 섹션 보기</a>
+      <div class="filters reveal">
+        <button class="filter active" data-filter="all">전체</button>
+        <button class="filter" data-filter="landmark">상징조형물</button>
+        <button class="filter" data-filter="landscape">경관디자인</button>
+        <button class="filter" data-filter="night">야간경관</button>
+        <button class="filter" data-filter="public">공공공간</button>
       </div>
-    </div>
-  </section>
-</main>
 
-<footer>
-  <p>© 2026 JNC DESIGN. Interactive Homepage Renewal Demo.</p>
-</footer>
+      <div class="portfolio-grid">
+        <article class="portfolio-card reveal" data-category="night landmark">
+          <div class="portfolio-thumb thumb1"></div>
+          <div class="portfolio-meta">
+            <p>LANDMARK / NIGHT VIEW</p>
+            <h3>전망시설 및 야간 경관 연출</h3>
+          </div>
+        </article>
 
-<script>
-  // =========================
-  // 공통 이미지/링크 반영
-  // =========================
-  function setBg(id, url) {
-    const el = document.getElementById(id);
-    if (!el || !url || url.includes("PASTE_")) return;
-    el.style.backgroundImage = `url('${url}')`;
-  }
+        <article class="portfolio-card reveal" data-category="public landscape">
+          <div class="portfolio-thumb thumb2"></div>
+          <div class="portfolio-meta">
+            <p>PUBLIC / LANDSCAPE</p>
+            <h3>지역 상징형 공공 구조물</h3>
+          </div>
+        </article>
 
-  function setLogo(id, url) {
-    const el = document.getElementById(id);
-    if (!el || !url || url.includes("PASTE_")) return;
-    el.style.backgroundImage = `url('${url}')`;
-  }
+        <article class="portfolio-card reveal" data-category="night public">
+          <div class="portfolio-thumb thumb3"></div>
+          <div class="portfolio-meta">
+            <p>PUBLIC / NIGHT</p>
+            <h3>상권 활성화 거리 조형 및 야간 연출</h3>
+          </div>
+        </article>
 
-  setLogo("brandLogo", assets.logo);
-  setBg("heroOverlay", assets.heroImage);
-  setBg("beforeLayer", assets.beforeImage);
-  setBg("afterLayer", assets.afterImage);
+        <article class="portfolio-card reveal" data-category="night landscape">
+          <div class="portfolio-thumb thumb4"></div>
+          <div class="portfolio-meta">
+            <p>LANDSCAPE / NIGHT</p>
+            <h3>공원 경관 조명 및 포토존</h3>
+          </div>
+        </article>
 
-  setBg("thumb1", assets.p1);
-  setBg("thumb2", assets.p2);
-  setBg("thumb3", assets.p3);
-  setBg("thumb4", assets.p4);
-  setBg("thumb5", assets.p5);
-  setBg("thumb6", assets.p6);
+        <article class="portfolio-card reveal" data-category="public night">
+          <div class="portfolio-thumb thumb5"></div>
+          <div class="portfolio-meta">
+            <p>PUBLIC SPACE</p>
+            <h3>공공공간 아치형 조형 연출</h3>
+          </div>
+        </article>
 
-  const gsFrame = document.getElementById("gsFrame");
-  const openGsBtn = document.getElementById("openGsBtn");
+        <article class="portfolio-card reveal" data-category="landmark night">
+          <div class="portfolio-thumb thumb6"></div>
+          <div class="portfolio-meta">
+            <p>SCULPTURE / NIGHT</p>
+            <h3>도시형 금속 상징조형물</h3>
+          </div>
+        </article>
+      </div>
+    </section>
 
-  if (gsFrame) gsFrame.src = assets.gsUrl;
-  if (openGsBtn) openGsBtn.href = assets.gsUrl;
+    <section id="blog" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">BLOG CONNECTION</p>
+        <h2>블로그와 연결되는 콘텐츠 허브</h2>
+        <p>
+          현재 운영 중인 블로그를 회사의 공식 콘텐츠 채널로 활용해,
+          프로젝트 소개와 회사 소식을 자연스럽게 확장할 수 있습니다.
+        </p>
+      </div>
 
-  // =========================
-  // Reveal Animation
-  // =========================
-  const revealItems = document.querySelectorAll(".reveal");
+      <div class="blog-grid">
+        <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
+          <span class="tag">NAVER BLOG</span>
+          <h3>회사 공식 블로그 바로가기</h3>
+          <p>프로젝트 소개, 작업 사례, 회사 소식 등을 연결하는 공식 외부 채널입니다.</p>
+        </a>
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("show");
-      }
+        <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
+          <span class="tag">PROJECT STORY</span>
+          <h3>프로젝트 비하인드 콘텐츠</h3>
+          <p>홈페이지에서 다 담지 못하는 제안 배경과 과정 설명을 블로그에서 확장할 수 있습니다.</p>
+        </a>
+
+        <a class="blog-card reveal" href="https://blog.naver.com/jnc-design" target="_blank">
+          <span class="tag">BRAND CHANNEL</span>
+          <h3>브랜드 신뢰도 강화</h3>
+          <p>홈페이지 방문자가 추가 자료를 탐색할 수 있도록 자연스러운 외부 채널 동선을 구성합니다.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="contact-box card reveal">
+        <p class="eyebrow">NEXT STEP</p>
+        <h2>실제 자료 기반 데모 구성</h2>
+        <p>
+          회사명, 로고, 블로그 채널, 대표 포트폴리오, 실제 GLB 3D 모델,
+          그리고 가우시안 스플래팅 iframe 섹션을 반영한 홈페이지 리뉴얼 데모입니다.
+        </p>
+        <div class="hero-actions" style="justify-content:center;">
+          <a href="#home" class="btn">처음으로</a>
+          <a href="#gaussian" class="btn outline">GS 섹션 보기</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 JNC DESIGN. Interactive Homepage Renewal Demo.</p>
+  </footer>
+
+  <script>
+    const revealItems = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("show");
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: "0px 0px -50px 0px"
     });
-  }, {
-    threshold: 0.12,
-    rootMargin: "0px 0px -50px 0px"
-  });
 
-  revealItems.forEach(item => observer.observe(item));
+    revealItems.forEach(item => observer.observe(item));
 
-  // =========================
-  // Hero + Scroll Story Animation
-  // =========================
-  const heroBg = document.getElementById("heroBg");
-  const heroContent = document.getElementById("heroContent");
-  const story = document.querySelector(".story");
-  const storyBg = document.getElementById("storyBg");
-  const storyTitle = document.getElementById("storyTitle");
-  const storyCards = [
-    document.getElementById("storyCard1"),
-    document.getElementById("storyCard2"),
-    document.getElementById("storyCard3"),
-    document.getElementById("storyCard4")
-  ];
+    const heroBg = document.getElementById("heroBg");
+    const heroContent = document.getElementById("heroContent");
+    const story = document.querySelector(".story");
+    const storyBg = document.getElementById("storyBg");
+    const storyTitle = document.getElementById("storyTitle");
+    const storyCards = [
+      document.getElementById("storyCard1"),
+      document.getElementById("storyCard2"),
+      document.getElementById("storyCard3"),
+      document.getElementById("storyCard4")
+    ];
 
-  function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-  }
-
-  function animatePage() {
-    const y = window.scrollY;
-    const h = window.innerHeight;
-
-    if (heroBg && heroContent) {
-      const p = clamp(y / h, 0, 1);
-      heroBg.style.transform = `scale(${1 + p * 0.18})`;
-      heroBg.style.filter = `brightness(${1 - p * 0.22}) blur(${p * 1.8}px)`;
-      heroContent.style.transform = `translateY(${-p * 80}px)`;
-      heroContent.style.opacity = `${1 - p * 0.72}`;
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
     }
 
-    if (story && storyBg && storyTitle) {
-      const rect = story.getBoundingClientRect();
-      const total = rect.height - h;
-      const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+    function animatePage() {
+      const y = window.scrollY;
+      const h = window.innerHeight;
 
-      storyBg.style.transform = `scale(${1.06 + progress * 0.26}) rotate(${progress * 1.8}deg)`;
-      storyBg.style.filter = `brightness(${0.8 + progress * 0.28})`;
-
-      if (progress > 0.05 && progress < 0.24) {
-        storyTitle.classList.add("show");
-      } else {
-        storyTitle.classList.remove("show");
+      if (heroBg && heroContent) {
+        const p = clamp(y / h, 0, 1);
+        heroBg.style.transform = `scale(${1 + p * 0.18})`;
+        heroBg.style.filter = `brightness(${1 - p * 0.22}) blur(${p * 1.8}px)`;
+        heroContent.style.transform = `translateY(${-p * 80}px)`;
+        heroContent.style.opacity = `${1 - p * 0.72}`;
       }
 
-      storyCards.forEach((card, index) => {
-        const start = 0.22 + index * 0.15;
-        const end = start + 0.18;
+      if (story && storyBg && storyTitle) {
+        const rect = story.getBoundingClientRect();
+        const total = rect.height - h;
+        const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
 
-        if (progress > start && progress < end) {
-          card.classList.add("show");
-        } else {
-          card.classList.remove("show");
-        }
-      });
+        storyBg.style.transform = `scale(${1.06 + progress * 0.26}) rotate(${progress * 1.8}deg)`;
+        storyBg.style.filter = `brightness(${0.8 + progress * 0.28})`;
+
+        if (progress > 0.05 && progress < 0.24) storyTitle.classList.add("show");
+        else storyTitle.classList.remove("show");
+
+        storyCards.forEach((card, index) => {
+          const start = 0.22 + index * 0.15;
+          const end = start + 0.18;
+          if (progress > start && progress < end) card.classList.add("show");
+          else card.classList.remove("show");
+        });
+      }
+
+      requestAnimationFrame(animatePage);
     }
 
     requestAnimationFrame(animatePage);
-  }
 
-  requestAnimationFrame(animatePage);
+    const compareRange = document.getElementById("compareRange");
+    const afterLayer = document.getElementById("afterLayer");
+    const handle = document.getElementById("handle");
 
-  // =========================
-  // Before / After Slider
-  // =========================
-  const compareRange = document.getElementById("compareRange");
-  const afterLayer = document.getElementById("afterLayer");
-  const handle = document.getElementById("handle");
+    if (compareRange && afterLayer && handle) {
+      compareRange.addEventListener("input", e => {
+        const value = e.target.value;
+        afterLayer.style.width = `${value}%`;
+        handle.style.left = `${value}%`;
+      });
+    }
 
-  if (compareRange && afterLayer && handle) {
-    compareRange.addEventListener("input", e => {
-      const value = e.target.value;
-      afterLayer.style.width = `${value}%`;
-      handle.style.left = `${value}%`;
-    });
-  }
+    const filterButtons = document.querySelectorAll(".filter");
+    const portfolioCards = document.querySelectorAll(".portfolio-card");
 
-  // =========================
-  // Portfolio Filter
-  // =========================
-  const filterButtons = document.querySelectorAll(".filter");
-  const portfolioCards = document.querySelectorAll(".portfolio-card");
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
 
-  filterButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      filterButtons.forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
+        const filter = button.dataset.filter;
 
-      const filter = button.dataset.filter;
-
-      portfolioCards.forEach(card => {
-        const category = card.dataset.category || "";
-        if (filter === "all" || category.includes(filter)) {
-          card.classList.remove("hide");
-        } else {
-          card.classList.add("hide");
-        }
+        portfolioCards.forEach(card => {
+          const category = card.dataset.category || "";
+          if (filter === "all" || category.includes(filter)) card.classList.remove("hide");
+          else card.classList.add("hide");
+        });
       });
     });
-  });
-</script>
+  </script>
+</body>
+</html>
