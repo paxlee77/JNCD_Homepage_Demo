@@ -261,9 +261,10 @@
       line-height: 1.75;
     }
 
+
     .story {
       position: relative;
-      height: 380vh;
+      height: 420vh;
       background: #05060a;
     }
 
@@ -273,7 +274,9 @@
       height: 100vh;
       overflow: hidden;
       padding: 0 8vw;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 46px;
       align-items: center;
       background: #05060a;
     }
@@ -282,88 +285,224 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 72% 36%, rgba(190,23,38,0.48), transparent 28%),
-        radial-gradient(circle at 28% 72%, rgba(255,255,255,0.12), transparent 25%),
-        linear-gradient(135deg, #05060a, #121721 48%, #05060a);
+        radial-gradient(circle at 70% 32%, rgba(190,23,38,0.36), transparent 28%),
+        radial-gradient(circle at 28% 72%, rgba(255,255,255,0.10), transparent 25%),
+        linear-gradient(135deg, #05060a, #111722 48%, #05060a);
       transform: scale(1.06);
+      z-index: 0;
     }
 
     .story-gridline {
       position: absolute;
       inset: 12%;
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.12);
       background:
-        linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.18) 47%, transparent 49%),
+        linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,0.16) 47%, transparent 49%),
         linear-gradient(35deg, transparent 0 61%, rgba(190,23,38,0.22) 62%, transparent 65%);
       transform: skewX(-14deg);
-      opacity: 0.72;
+      opacity: 0.58;
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .story-title {
+    .process-visual {
       position: relative;
       z-index: 2;
-      max-width: 760px;
+      height: min(68vh, 680px);
+      min-height: 480px;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 36px 110px rgba(0,0,0,0.45);
+      background: #111;
+    }
+
+    .process-layer {
+      position: absolute;
+      inset: 0;
       opacity: 0;
-      transform: translateY(80px) scale(0.94);
-      transition: 0.45s ease;
+      transform: scale(1.08);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      background-size: cover;
+      background-position: center;
     }
 
-    .story-title.show {
+    .process-layer.show {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: scale(1);
     }
 
-    .story-title h2 {
+    .process-layer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.38), rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.45)),
+        linear-gradient(0deg, rgba(0,0,0,0.55), transparent 45%, rgba(0,0,0,0.28));
+    }
+
+    .stage-empty {
+      background-image:
+        linear-gradient(135deg, rgba(80,80,80,0.25), rgba(20,20,20,0.38)),
+        url("./assets/portfolio_02.jpg");
+      filter: saturate(0.55) brightness(0.7);
+    }
+
+    .stage-construction {
+      background-image:
+        radial-gradient(circle at 35% 58%, rgba(255,190,90,0.42), transparent 16%),
+        linear-gradient(135deg, rgba(190,23,38,0.12), rgba(0,0,0,0.2)),
+        url("./assets/portfolio_03.jpg");
+      filter: saturate(0.85) brightness(0.82);
+    }
+
+    .stage-landscape {
+      background-image:
+        radial-gradient(circle at 65% 55%, rgba(120,210,150,0.28), transparent 18%),
+        linear-gradient(135deg, rgba(20,80,45,0.16), rgba(0,0,0,0.14)),
+        url("./assets/portfolio_04.jpg");
+      filter: saturate(0.95) brightness(0.88);
+    }
+
+    .stage-complete {
+      background-image:
+        radial-gradient(circle at 55% 46%, rgba(190,23,38,0.25), transparent 20%),
+        linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.08)),
+        url("./assets/portfolio_01.jpg");
+      filter: saturate(1.05) brightness(0.95);
+    }
+
+    .process-overlay {
+      position: absolute;
+      inset: auto 28px 28px 28px;
+      z-index: 5;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      pointer-events: none;
+    }
+
+    .process-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.58);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(14px);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .process-progress {
+      flex: 1;
+      height: 3px;
+      max-width: 280px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .process-progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #fff;
+      border-radius: 999px;
+    }
+
+    .process-copy {
+      position: relative;
+      z-index: 3;
+      max-width: 560px;
+    }
+
+    .process-copy .eyebrow {
+      color: #ff7d88;
+    }
+
+    .process-copy h2 {
       margin: 0;
-      font-size: clamp(44px, 7vw, 94px);
-      line-height: 1.04;
-      letter-spacing: -0.075em;
+      font-size: clamp(40px, 5vw, 76px);
+      line-height: 1.05;
+      letter-spacing: -0.07em;
     }
 
-    .story-title p:not(.eyebrow) {
-      max-width: 680px;
-      margin-top: 26px;
+    .process-copy > p {
+      margin: 24px 0 0;
       color: rgba(255,255,255,0.72);
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1.8;
     }
 
-    .story-card {
+    .process-step-texts {
+      position: relative;
+      min-height: 170px;
+      margin-top: 34px;
+    }
+
+    .process-step-text {
       position: absolute;
-      z-index: 3;
-      width: min(360px, 32vw);
-      padding: 30px;
-      border-radius: 30px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.18);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+      inset: 0 auto auto 0;
       opacity: 0;
-      transform: translateY(90px) scale(0.86);
-      transition: 0.45s ease;
+      transform: translateY(28px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
 
-    .story-card.show {
+    .process-step-text.show {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
 
-    .story-card h3 {
-      margin: 0 0 14px;
+    .process-step-text span {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #07080d;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .process-step-text h3 {
+      margin: 0 0 10px;
       font-size: 28px;
       letter-spacing: -0.045em;
     }
 
-    .story-card p {
+    .process-step-text p {
       margin: 0;
       color: rgba(255,255,255,0.68);
-      line-height: 1.72;
+      line-height: 1.75;
     }
 
-    .story-card.card-1 { right: 12vw; top: 18vh; }
-    .story-card.card-2 { right: 29vw; bottom: 16vh; }
-    .story-card.card-3 { right: 8vw; bottom: 28vh; }
-    .story-card.card-4 { left: 9vw; bottom: 14vh; }
+    .worker-dot {
+      position: absolute;
+      z-index: 6;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffbe5a;
+      box-shadow: 0 0 0 8px rgba(255,190,90,0.18), 0 0 30px rgba(255,190,90,0.5);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+      transition: 0.4s ease;
+    }
+
+    .worker-dot.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .worker-1 { left: 35%; top: 56%; }
+    .worker-2 { left: 47%; top: 61%; }
+    .worker-3 { left: 58%; top: 52%; }
 
     .viewer-layout {
       display: grid;
@@ -884,43 +1023,62 @@
         <div class="story-bg" id="storyBg"></div>
         <div class="story-gridline"></div>
 
-        <div class="story-title" id="storyTitle">
-          <p class="eyebrow">SCROLL EXPERIENCE</p>
+        <div class="process-visual">
+          <div class="process-layer stage-empty show" id="processLayer0"></div>
+          <div class="process-layer stage-construction" id="processLayer1"></div>
+          <div class="process-layer stage-landscape" id="processLayer2"></div>
+          <div class="process-layer stage-complete" id="processLayer3"></div>
+
+          <div class="worker-dot worker-1" id="worker1"></div>
+          <div class="worker-dot worker-2" id="worker2"></div>
+          <div class="worker-dot worker-3" id="worker3"></div>
+
+          <div class="process-overlay">
+            <div class="process-badge" id="processBadge">01 SITE</div>
+            <div class="process-progress"><span id="processProgress"></span></div>
+          </div>
+        </div>
+
+        <div class="process-copy">
+          <p class="eyebrow">SCROLL CONSTRUCTION STORY</p>
           <h2>
-            스크롤만으로도<br>
-            회사의 역량이 전달됩니다.
+            빈 부지가<br>
+            하나의 공간으로 완성됩니다.
           </h2>
           <p>
-            포트폴리오 소개, 3D 경험, 실사형 공간 뷰어, 외부 채널 연결까지
-            하나의 흐름 안에서 자연스럽게 보여줍니다.
+            스크롤 흐름에 따라 부지 정리, 공사, 포장·조경, 조형물 설치까지
+            프로젝트가 완성되는 과정을 이미지 변화로 보여줍니다.
           </p>
-        </div>
 
-        <div class="story-card card-1" id="storyCard1">
-          <span class="num">01</span>
-          <h3>조형물 / 경관</h3>
-          <p>대표 프로젝트 이미지를 중심으로 회사가 수행한 주요 분야를 직관적으로 소개합니다.</p>
-        </div>
+          <div class="process-step-texts">
+            <div class="process-step-text show" id="processText0">
+              <span>01</span>
+              <h3>빈 부지 분석</h3>
+              <p>대상지의 규모, 동선, 주변 맥락을 파악하고 공간의 가능성을 검토합니다.</p>
+            </div>
 
-        <div class="story-card card-2" id="storyCard2">
-          <span class="num">02</span>
-          <h3>3D 모델</h3>
-          <p>완성된 결과물뿐 아니라 모델 기반의 구조 이해까지 가능하도록 확장합니다.</p>
-        </div>
+            <div class="process-step-text" id="processText1">
+              <span>02</span>
+              <h3>기초 공사 진행</h3>
+              <p>작업 인력과 장비가 투입되고, 바닥 정리와 기반 공사가 시작됩니다.</p>
+            </div>
 
-        <div class="story-card card-3" id="storyCard3">
-          <span class="num">03</span>
-          <h3>GS 공간 체험</h3>
-          <p>가우시안 스플래팅 데모를 통해 실제 공간을 브라우저 안에서 체험하게 합니다.</p>
-        </div>
+            <div class="process-step-text" id="processText2">
+              <span>03</span>
+              <h3>포장과 조경 형성</h3>
+              <p>보행 동선, 포장면, 녹지, 휴게 요소가 구성되며 공공공간의 형태가 드러납니다.</p>
+            </div>
 
-        <div class="story-card card-4" id="storyCard4">
-          <span class="num">04</span>
-          <h3>브랜드 확장</h3>
-          <p>블로그 등 외부 채널과 연계해 회사의 레퍼런스와 콘텐츠를 더 깊게 탐색하게 합니다.</p>
+            <div class="process-step-text" id="processText3">
+              <span>04</span>
+              <h3>조형물 설치 완료</h3>
+              <p>상징 조형물과 야간 연출이 결합되어 기억에 남는 장소로 완성됩니다.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
 
     <section id="viewer" class="section">
       <div class="section-head reveal">
@@ -1165,13 +1323,26 @@
     const heroContent = document.getElementById("heroContent");
     const story = document.querySelector(".story");
     const storyBg = document.getElementById("storyBg");
-    const storyTitle = document.getElementById("storyTitle");
-    const storyCards = [
-      document.getElementById("storyCard1"),
-      document.getElementById("storyCard2"),
-      document.getElementById("storyCard3"),
-      document.getElementById("storyCard4")
+    const processLayers = [
+      document.getElementById("processLayer0"),
+      document.getElementById("processLayer1"),
+      document.getElementById("processLayer2"),
+      document.getElementById("processLayer3")
     ];
+    const processTexts = [
+      document.getElementById("processText0"),
+      document.getElementById("processText1"),
+      document.getElementById("processText2"),
+      document.getElementById("processText3")
+    ];
+    const processBadge = document.getElementById("processBadge");
+    const processProgress = document.getElementById("processProgress");
+    const workerDots = [
+      document.getElementById("worker1"),
+      document.getElementById("worker2"),
+      document.getElementById("worker3")
+    ];
+    const processLabels = ["01 SITE", "02 BUILD", "03 LANDSCAPE", "04 COMPLETE"];
 
     function clamp(value, min, max) {
       return Math.min(Math.max(value, min), max);
@@ -1189,22 +1360,34 @@
         heroContent.style.opacity = `${1 - p * 0.72}`;
       }
 
-      if (story && storyBg && storyTitle) {
+      if (story && storyBg) {
         const rect = story.getBoundingClientRect();
         const total = rect.height - h;
         const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
 
-        storyBg.style.transform = `scale(${1.06 + progress * 0.26}) rotate(${progress * 1.8}deg)`;
-        storyBg.style.filter = `brightness(${0.8 + progress * 0.28})`;
+        storyBg.style.transform = `scale(${1.06 + progress * 0.22}) rotate(${progress * 1.4}deg)`;
+        storyBg.style.filter = `brightness(${0.82 + progress * 0.24})`;
 
-        if (progress > 0.05 && progress < 0.24) storyTitle.classList.add("show");
-        else storyTitle.classList.remove("show");
+        const stage = Math.min(3, Math.floor(progress * 4));
+        const localProgress = clamp((progress * 4) - stage, 0, 1);
 
-        storyCards.forEach((card, index) => {
-          const start = 0.22 + index * 0.15;
-          const end = start + 0.18;
-          if (progress > start && progress < end) card.classList.add("show");
-          else card.classList.remove("show");
+        processLayers.forEach((layer, index) => {
+          if (!layer) return;
+          layer.classList.toggle("show", index === stage);
+        });
+
+        processTexts.forEach((text, index) => {
+          if (!text) return;
+          text.classList.toggle("show", index === stage);
+        });
+
+        if (processBadge) processBadge.textContent = processLabels[stage];
+        if (processProgress) processProgress.style.width = `${progress * 100}%`;
+
+        workerDots.forEach((dot, index) => {
+          if (!dot) return;
+          const shouldShow = stage === 1 || (stage === 2 && index < 2);
+          dot.classList.toggle("show", shouldShow);
         });
       }
 
