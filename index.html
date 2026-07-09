@@ -264,7 +264,7 @@
 
     .story {
       position: relative;
-      height: 420vh;
+      height: 500vh;
       background: #05060a;
     }
 
@@ -344,32 +344,40 @@
     .stage-empty {
       background-image:
         linear-gradient(135deg, rgba(80,80,80,0.25), rgba(20,20,20,0.38)),
-        url("./assets/portfolio_02.jpg");
-      filter: saturate(0.55) brightness(0.7);
+        url("./assets/process_01.png");
+      filter: saturate(0.75) brightness(0.82);
     }
 
     .stage-construction {
       background-image:
         radial-gradient(circle at 35% 58%, rgba(255,190,90,0.42), transparent 16%),
         linear-gradient(135deg, rgba(190,23,38,0.12), rgba(0,0,0,0.2)),
-        url("./assets/portfolio_03.jpg");
-      filter: saturate(0.85) brightness(0.82);
+        url("./assets/process_02.png");
+      filter: saturate(0.9) brightness(0.88);
     }
 
     .stage-landscape {
       background-image:
-        radial-gradient(circle at 65% 55%, rgba(120,210,150,0.28), transparent 18%),
-        linear-gradient(135deg, rgba(20,80,45,0.16), rgba(0,0,0,0.14)),
-        url("./assets/portfolio_04.jpg");
-      filter: saturate(0.95) brightness(0.88);
+        radial-gradient(circle at 60% 55%, rgba(180,220,255,0.18), transparent 18%),
+        linear-gradient(135deg, rgba(20,80,45,0.12), rgba(0,0,0,0.14)),
+        url("./assets/process_03.png");
+      filter: saturate(0.98) brightness(0.9);
     }
 
     .stage-complete {
       background-image:
-        radial-gradient(circle at 55% 46%, rgba(190,23,38,0.25), transparent 20%),
+        radial-gradient(circle at 55% 46%, rgba(190,23,38,0.20), transparent 20%),
         linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.08)),
-        url("./assets/portfolio_01.jpg");
-      filter: saturate(1.05) brightness(0.95);
+        url("./assets/process_04.png");
+      filter: saturate(1.05) brightness(0.98);
+    }
+
+    .stage-night {
+      background-image:
+        radial-gradient(circle at 52% 48%, rgba(255,220,150,0.22), transparent 24%),
+        linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.10)),
+        url("./assets/process_05.png");
+      filter: saturate(1.08) brightness(0.92);
     }
 
     .process-overlay {
@@ -440,7 +448,7 @@
 
     .process-step-texts {
       position: relative;
-      min-height: 170px;
+      min-height: 190px;
       margin-top: 34px;
     }
 
@@ -503,6 +511,7 @@
     .worker-1 { left: 35%; top: 56%; }
     .worker-2 { left: 47%; top: 61%; }
     .worker-3 { left: 58%; top: 52%; }
+
 
     .viewer-layout {
       display: grid;
@@ -933,6 +942,35 @@
       .contact-box { padding: 34px 24px; }
       model-viewer { height: 420px; }
     }
+  
+    @media (max-width: 760px) {
+      .story {
+        height: auto !important;
+      }
+
+      .story-sticky {
+        position: relative !important;
+        height: auto !important;
+        min-height: 100vh;
+        display: block !important;
+        padding: 110px 22px !important;
+      }
+
+      .process-visual {
+        height: 420px;
+        min-height: 420px;
+        margin-bottom: 34px;
+      }
+
+      .process-copy {
+        max-width: none;
+      }
+
+      .process-step-texts {
+        min-height: 260px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1028,13 +1066,14 @@
           <div class="process-layer stage-construction" id="processLayer1"></div>
           <div class="process-layer stage-landscape" id="processLayer2"></div>
           <div class="process-layer stage-complete" id="processLayer3"></div>
+          <div class="process-layer stage-night" id="processLayer4"></div>
 
           <div class="worker-dot worker-1" id="worker1"></div>
           <div class="worker-dot worker-2" id="worker2"></div>
           <div class="worker-dot worker-3" id="worker3"></div>
 
           <div class="process-overlay">
-            <div class="process-badge" id="processBadge">01 SITE</div>
+            <div class="process-badge" id="processBadge">01 CONSTRUCTION</div>
             <div class="process-progress"><span id="processProgress"></span></div>
           </div>
         </div>
@@ -1042,37 +1081,43 @@
         <div class="process-copy">
           <p class="eyebrow">SCROLL CONSTRUCTION STORY</p>
           <h2>
-            빈 부지가<br>
-            하나의 공간으로 완성됩니다.
+            시공 과정이<br>
+            하나의 장면으로 이어집니다.
           </h2>
           <p>
-            스크롤 흐름에 따라 부지 정리, 공사, 포장·조경, 조형물 설치까지
+            스크롤을 내릴수록 공사 현장, 포장, 조형물 설치, 주간 완성, 야간 경관까지
             프로젝트가 완성되는 과정을 이미지 변화로 보여줍니다.
           </p>
 
           <div class="process-step-texts">
             <div class="process-step-text show" id="processText0">
               <span>01</span>
-              <h3>빈 부지 분석</h3>
-              <p>대상지의 규모, 동선, 주변 맥락을 파악하고 공간의 가능성을 검토합니다.</p>
+              <h3>기초 공사</h3>
+              <p>대상지의 흙, 장비, 작업 동선이 드러나는 초기 공사 단계입니다.</p>
             </div>
 
             <div class="process-step-text" id="processText1">
               <span>02</span>
-              <h3>기초 공사 진행</h3>
-              <p>작업 인력과 장비가 투입되고, 바닥 정리와 기반 공사가 시작됩니다.</p>
+              <h3>포장 공사</h3>
+              <p>원형 광장 동선과 바닥 포장이 형성되며 공간의 윤곽이 잡힙니다.</p>
             </div>
 
             <div class="process-step-text" id="processText2">
               <span>03</span>
-              <h3>포장과 조경 형성</h3>
-              <p>보행 동선, 포장면, 녹지, 휴게 요소가 구성되며 공공공간의 형태가 드러납니다.</p>
+              <h3>조형물 설치</h3>
+              <p>크레인과 작업 인력이 투입되어 상징 조형물이 중심부에 설치됩니다.</p>
             </div>
 
             <div class="process-step-text" id="processText3">
               <span>04</span>
-              <h3>조형물 설치 완료</h3>
-              <p>상징 조형물과 야간 연출이 결합되어 기억에 남는 장소로 완성됩니다.</p>
+              <h3>주간 완성</h3>
+              <p>조경, 포장, 조형물이 정리되어 공공공간으로 완성된 모습을 보여줍니다.</p>
+            </div>
+
+            <div class="process-step-text" id="processText4">
+              <span>05</span>
+              <h3>야간 경관 완성</h3>
+              <p>조명과 건축, 조형물이 어우러져 야간에도 인상적인 장소성을 만듭니다.</p>
             </div>
           </div>
         </div>
@@ -1327,13 +1372,15 @@
       document.getElementById("processLayer0"),
       document.getElementById("processLayer1"),
       document.getElementById("processLayer2"),
-      document.getElementById("processLayer3")
+      document.getElementById("processLayer3"),
+      document.getElementById("processLayer4")
     ];
     const processTexts = [
       document.getElementById("processText0"),
       document.getElementById("processText1"),
       document.getElementById("processText2"),
-      document.getElementById("processText3")
+      document.getElementById("processText3"),
+      document.getElementById("processText4")
     ];
     const processBadge = document.getElementById("processBadge");
     const processProgress = document.getElementById("processProgress");
@@ -1342,7 +1389,7 @@
       document.getElementById("worker2"),
       document.getElementById("worker3")
     ];
-    const processLabels = ["01 SITE", "02 BUILD", "03 LANDSCAPE", "04 COMPLETE"];
+    const processLabels = ["01 CONSTRUCTION", "02 PAVING", "03 INSTALL", "04 DAY VIEW", "05 NIGHT VIEW"];
 
     function clamp(value, min, max) {
       return Math.min(Math.max(value, min), max);
@@ -1368,13 +1415,27 @@
         storyBg.style.transform = `scale(${1.06 + progress * 0.22}) rotate(${progress * 1.4}deg)`;
         storyBg.style.filter = `brightness(${0.82 + progress * 0.24})`;
 
-        const stage = Math.min(3, Math.floor(progress * 4));
-        const localProgress = clamp((progress * 4) - stage, 0, 1);
+        const stage = Math.min(4, Math.floor(progress * 5));
 
         processLayers.forEach((layer, index) => {
           if (!layer) return;
           layer.classList.toggle("show", index === stage);
         });
+
+        processTexts.forEach((text, index) => {
+          if (!text) return;
+          text.classList.toggle("show", index === stage);
+        });
+
+        if (processBadge) processBadge.textContent = processLabels[stage];
+        if (processProgress) processProgress.style.width = `${progress * 100}%`;
+
+        workerDots.forEach((dot, index) => {
+          if (!dot) return;
+          const shouldShow = stage === 0 || stage === 1 || (stage === 2 && index < 2);
+          dot.classList.toggle("show", shouldShow);
+        });
+      });
 
         processTexts.forEach((text, index) => {
           if (!text) return;
