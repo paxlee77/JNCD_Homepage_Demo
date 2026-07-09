@@ -971,6 +971,67 @@
       }
     }
 
+  
+    .lazy-viewer-cover,
+    .lazy-gs-cover {
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+      text-align: center;
+      background:
+        radial-gradient(circle at center, rgba(190,23,38,0.22), transparent 42%),
+        linear-gradient(135deg, #101828, #05060a);
+    }
+
+    .lazy-gs-cover {
+      min-height: 620px;
+      background:
+        radial-gradient(circle at 54% 45%, rgba(190,23,38,0.18), transparent 34%),
+        linear-gradient(135deg, #090b12, #05060a);
+    }
+
+    .lazy-card {
+      width: min(100%, 520px);
+      padding: 34px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 28px 90px rgba(0,0,0,0.28);
+    }
+
+    .lazy-card h3 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      letter-spacing: -0.045em;
+    }
+
+    .lazy-card p {
+      margin: 0 0 24px;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.75;
+    }
+
+    .load-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .load-btn:hover {
+      transform: translateY(-2px);
+      background: var(--brand2);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
   </style>
 </head>
 
@@ -1142,17 +1203,18 @@
             <span class="viewer-chip">Auto Rotate</span>
           </div>
 
-          <model-viewer
-            src="./assets/JNCD_modeling.glb"
-            alt="JNC DESIGN 3D model"
-            camera-controls
-            auto-rotate
-            shadow-intensity="1"
-            exposure="1"
-            interaction-prompt="auto"
-            loading="lazy"
-            ar>
-          </model-viewer>
+          <div class="lazy-viewer-cover" id="modelCover">
+            <div class="lazy-card">
+              <h3>3D 모델 뷰어</h3>
+              <p>
+                페이지 성능을 위해 3D 모델은 버튼을 누른 뒤 로딩됩니다.<br>
+                실행 후 마우스로 회전·확대해서 확인할 수 있습니다.
+              </p>
+              <button class="load-btn" id="loadModelBtn" type="button">3D 모델 실행</button>
+            </div>
+          </div>
+
+          <div id="modelViewerMount" class="hidden"></div>
 
           <div class="viewer-caption">
             마우스로 드래그하면 모델을 회전할 수 있고, 휠로 확대/축소할 수 있습니다.
@@ -1190,14 +1252,17 @@
           </div>
         </div>
 
-        <div class="gs-frame-wrap">
-          <iframe
-            class="gs-frame"
-            src="https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097"
-            loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer">
-          </iframe>
+        <div class="gs-frame-wrap" id="gsFrameWrap">
+          <div class="lazy-gs-cover" id="gsCover">
+            <div class="lazy-card">
+              <h3>Gaussian Splatting Viewer</h3>
+              <p>
+                가우시안 스플래팅은 용량이 큰 공간 뷰어라 버튼을 누른 뒤 로딩됩니다.<br>
+                홈페이지 안에서 바로 체험할 수 있습니다.
+              </p>
+              <button class="load-btn" id="loadGsBtn" type="button">GS Viewer 실행</button>
+            </div>
+          </div>
         </div>
 
         <div class="gs-note">
@@ -1395,6 +1460,8 @@
       return Math.min(Math.max(value, min), max);
     }
 
+    let ticking = false;
+
     function animatePage() {
       const y = window.scrollY;
       const h = window.innerHeight;
@@ -1435,27 +1502,68 @@
           const shouldShow = stage === 0 || stage === 1 || (stage === 2 && index < 2);
           dot.classList.toggle("show", shouldShow);
         });
-      });
-
-        processTexts.forEach((text, index) => {
-          if (!text) return;
-          text.classList.toggle("show", index === stage);
-        });
-
-        if (processBadge) processBadge.textContent = processLabels[stage];
-        if (processProgress) processProgress.style.width = `${progress * 100}%`;
-
-        workerDots.forEach((dot, index) => {
-          if (!dot) return;
-          const shouldShow = stage === 1 || (stage === 2 && index < 2);
-          dot.classList.toggle("show", shouldShow);
-        });
       }
 
-      requestAnimationFrame(animatePage);
+      ticking = false;
+    }
+
+    function requestScrollUpdate() {
+      if (!ticking) {
+        window.requestAnimationFrame(animatePage);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", requestScrollUpdate, { passive: true });
+    window.addEventListener("resize", requestScrollUpdate);
+    requestScrollUpdate();
     }
 
     requestAnimationFrame(animatePage);
+
+
+    const loadModelBtn = document.getElementById("loadModelBtn");
+    const modelCover = document.getElementById("modelCover");
+    const modelViewerMount = document.getElementById("modelViewerMount");
+
+    if (loadModelBtn && modelCover && modelViewerMount) {
+      loadModelBtn.addEventListener("click", () => {
+        modelViewerMount.innerHTML = `
+          <model-viewer
+            src="./assets/JNCD_modeling.glb"
+            alt="JNC DESIGN 3D model"
+            camera-controls
+            auto-rotate
+            shadow-intensity="1"
+            exposure="1"
+            interaction-prompt="auto"
+            loading="lazy"
+            ar>
+          </model-viewer>
+        `;
+        modelCover.classList.add("hidden");
+        modelViewerMount.classList.remove("hidden");
+      });
+    }
+
+    const loadGsBtn = document.getElementById("loadGsBtn");
+    const gsCover = document.getElementById("gsCover");
+    const gsFrameWrap = document.getElementById("gsFrameWrap");
+    const gsUrl = "https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097";
+
+    if (loadGsBtn && gsCover && gsFrameWrap) {
+      loadGsBtn.addEventListener("click", () => {
+        const iframe = document.createElement("iframe");
+        iframe.className = "gs-frame";
+        iframe.src = gsUrl;
+        iframe.loading = "lazy";
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = "no-referrer";
+
+        gsFrameWrap.innerHTML = "";
+        gsFrameWrap.appendChild(iframe);
+      });
+    }
 
     const compareRange = document.getElementById("compareRange");
     const afterLayer = document.getElementById("afterLayer");
