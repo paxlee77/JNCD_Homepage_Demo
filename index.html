@@ -1416,184 +1416,192 @@
   </footer>
 
   <script>
-    const revealItems = document.querySelectorAll(".reveal");
+    document.addEventListener("DOMContentLoaded", () => {
+      const revealItems = document.querySelectorAll(".reveal");
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add("show");
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add("show");
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: "0px 0px -50px 0px"
       });
-    }, {
-      threshold: 0.12,
-      rootMargin: "0px 0px -50px 0px"
-    });
 
-    revealItems.forEach(item => observer.observe(item));
+      revealItems.forEach(item => observer.observe(item));
 
-    const heroBg = document.getElementById("heroBg");
-    const heroContent = document.getElementById("heroContent");
-    const story = document.querySelector(".story");
-    const storyBg = document.getElementById("storyBg");
-    const processLayers = [
-      document.getElementById("processLayer0"),
-      document.getElementById("processLayer1"),
-      document.getElementById("processLayer2"),
-      document.getElementById("processLayer3"),
-      document.getElementById("processLayer4")
-    ];
-    const processTexts = [
-      document.getElementById("processText0"),
-      document.getElementById("processText1"),
-      document.getElementById("processText2"),
-      document.getElementById("processText3"),
-      document.getElementById("processText4")
-    ];
-    const processBadge = document.getElementById("processBadge");
-    const processProgress = document.getElementById("processProgress");
-    const workerDots = [
-      document.getElementById("worker1"),
-      document.getElementById("worker2"),
-      document.getElementById("worker3")
-    ];
-    const processLabels = ["01 CONSTRUCTION", "02 PAVING", "03 INSTALL", "04 DAY VIEW", "05 NIGHT VIEW"];
+      const heroBg = document.getElementById("heroBg");
+      const heroContent = document.getElementById("heroContent");
+      const story = document.querySelector(".story");
+      const storyBg = document.getElementById("storyBg");
 
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
+      const processLayers = [
+        document.getElementById("processLayer0"),
+        document.getElementById("processLayer1"),
+        document.getElementById("processLayer2"),
+        document.getElementById("processLayer3"),
+        document.getElementById("processLayer4")
+      ];
 
-    let ticking = false;
+      const processTexts = [
+        document.getElementById("processText0"),
+        document.getElementById("processText1"),
+        document.getElementById("processText2"),
+        document.getElementById("processText3"),
+        document.getElementById("processText4")
+      ];
 
-    function animatePage() {
-      const y = window.scrollY;
-      const h = window.innerHeight;
+      const processBadge = document.getElementById("processBadge");
+      const processProgress = document.getElementById("processProgress");
 
-      if (heroBg && heroContent) {
-        const p = clamp(y / h, 0, 1);
-        heroBg.style.transform = `scale(${1 + p * 0.18})`;
-        heroBg.style.filter = `brightness(${1 - p * 0.22}) blur(${p * 1.8}px)`;
-        heroContent.style.transform = `translateY(${-p * 80}px)`;
-        heroContent.style.opacity = `${1 - p * 0.72}`;
+      const workerDots = [
+        document.getElementById("worker1"),
+        document.getElementById("worker2"),
+        document.getElementById("worker3")
+      ];
+
+      const processLabels = [
+        "01 CONSTRUCTION",
+        "02 PAVING",
+        "03 INSTALL",
+        "04 DAY VIEW",
+        "05 NIGHT VIEW"
+      ];
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
       }
 
-      if (story && storyBg) {
-        const rect = story.getBoundingClientRect();
-        const total = rect.height - h;
-        const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+      let ticking = false;
 
-        storyBg.style.transform = `scale(${1.06 + progress * 0.22}) rotate(${progress * 1.4}deg)`;
-        storyBg.style.filter = `brightness(${0.82 + progress * 0.24})`;
+      function animatePage() {
+        const y = window.scrollY;
+        const h = window.innerHeight;
 
-        const stage = Math.min(4, Math.floor(progress * 5));
+        if (heroBg && heroContent) {
+          const p = clamp(y / h, 0, 1);
+          heroBg.style.transform = `scale(${1 + p * 0.18})`;
+          heroBg.style.filter = `brightness(${1 - p * 0.22}) blur(${p * 1.8}px)`;
+          heroContent.style.transform = `translateY(${-p * 80}px)`;
+          heroContent.style.opacity = `${1 - p * 0.72}`;
+        }
 
-        processLayers.forEach((layer, index) => {
-          if (!layer) return;
-          layer.classList.toggle("show", index === stage);
-        });
+        if (story && storyBg && processLayers.length) {
+          const rect = story.getBoundingClientRect();
+          const total = rect.height - h;
+          const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
 
-        processTexts.forEach((text, index) => {
-          if (!text) return;
-          text.classList.toggle("show", index === stage);
-        });
+          storyBg.style.transform = `scale(${1.06 + progress * 0.22}) rotate(${progress * 1.4}deg)`;
+          storyBg.style.filter = `brightness(${0.82 + progress * 0.24})`;
 
-        if (processBadge) processBadge.textContent = processLabels[stage];
-        if (processProgress) processProgress.style.width = `${progress * 100}%`;
+          const stage = Math.min(4, Math.floor(progress * 5));
 
-        workerDots.forEach((dot, index) => {
-          if (!dot) return;
-          const shouldShow = stage === 0 || stage === 1 || (stage === 2 && index < 2);
-          dot.classList.toggle("show", shouldShow);
+          processLayers.forEach((layer, index) => {
+            if (layer) layer.classList.toggle("show", index === stage);
+          });
+
+          processTexts.forEach((text, index) => {
+            if (text) text.classList.toggle("show", index === stage);
+          });
+
+          if (processBadge) processBadge.textContent = processLabels[stage];
+          if (processProgress) processProgress.style.width = `${progress * 100}%`;
+
+          workerDots.forEach((dot, index) => {
+            if (!dot) return;
+            const shouldShow = stage === 0 || stage === 1 || (stage === 2 && index < 2);
+            dot.classList.toggle("show", shouldShow);
+          });
+        }
+
+        ticking = false;
+      }
+
+      function requestScrollUpdate() {
+        if (!ticking) {
+          window.requestAnimationFrame(animatePage);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener("scroll", requestScrollUpdate, { passive: true });
+      window.addEventListener("resize", requestScrollUpdate);
+      requestScrollUpdate();
+
+      const loadModelBtn = document.getElementById("loadModelBtn");
+      const modelCover = document.getElementById("modelCover");
+      const modelViewerMount = document.getElementById("modelViewerMount");
+
+      if (loadModelBtn && modelCover && modelViewerMount) {
+        loadModelBtn.addEventListener("click", () => {
+          modelViewerMount.innerHTML = `
+            <model-viewer
+              src="./assets/JNCD_modeling.glb"
+              alt="JNC DESIGN 3D model"
+              camera-controls
+              auto-rotate
+              shadow-intensity="1"
+              exposure="1"
+              interaction-prompt="auto"
+              loading="lazy"
+              ar>
+            </model-viewer>
+          `;
+          modelCover.classList.add("hidden");
+          modelViewerMount.classList.remove("hidden");
         });
       }
 
-      ticking = false;
-    }
+      const loadGsBtn = document.getElementById("loadGsBtn");
+      const gsFrameWrap = document.getElementById("gsFrameWrap");
 
-    function requestScrollUpdate() {
-      if (!ticking) {
-        window.requestAnimationFrame(animatePage);
-        ticking = true;
+      const gsUrl = "https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097";
+
+      if (loadGsBtn && gsFrameWrap) {
+        loadGsBtn.addEventListener("click", () => {
+          const iframe = document.createElement("iframe");
+          iframe.className = "gs-frame";
+          iframe.src = gsUrl;
+          iframe.loading = "lazy";
+          iframe.allowFullscreen = true;
+          iframe.referrerPolicy = "no-referrer";
+
+          gsFrameWrap.innerHTML = "";
+          gsFrameWrap.appendChild(iframe);
+        });
       }
-    }
 
-    window.addEventListener("scroll", requestScrollUpdate, { passive: true });
-    window.addEventListener("resize", requestScrollUpdate);
-    requestScrollUpdate();
-    }
+      const compareRange = document.getElementById("compareRange");
+      const afterLayer = document.getElementById("afterLayer");
+      const handle = document.getElementById("handle");
 
-    requestAnimationFrame(animatePage);
+      if (compareRange && afterLayer && handle) {
+        compareRange.addEventListener("input", e => {
+          const value = e.target.value;
+          afterLayer.style.width = `${value}%`;
+          handle.style.left = `${value}%`;
+        });
+      }
 
+      const filterButtons = document.querySelectorAll(".filter");
+      const portfolioCards = document.querySelectorAll(".portfolio-card");
 
-    const loadModelBtn = document.getElementById("loadModelBtn");
-    const modelCover = document.getElementById("modelCover");
-    const modelViewerMount = document.getElementById("modelViewerMount");
+      filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
 
-    if (loadModelBtn && modelCover && modelViewerMount) {
-      loadModelBtn.addEventListener("click", () => {
-        modelViewerMount.innerHTML = `
-          <model-viewer
-            src="./assets/JNCD_modeling.glb"
-            alt="JNC DESIGN 3D model"
-            camera-controls
-            auto-rotate
-            shadow-intensity="1"
-            exposure="1"
-            interaction-prompt="auto"
-            loading="lazy"
-            ar>
-          </model-viewer>
-        `;
-        modelCover.classList.add("hidden");
-        modelViewerMount.classList.remove("hidden");
-      });
-    }
+          const filter = button.dataset.filter;
 
-    const loadGsBtn = document.getElementById("loadGsBtn");
-    const gsCover = document.getElementById("gsCover");
-    const gsFrameWrap = document.getElementById("gsFrameWrap");
-    const gsUrl = "https://render-gs.d5render.cn/render?load=https://cn.ai.d5render.com/ai/gs/output/2008737600381009921/2008737600354959361_backup.splat&gsId=2008737600354959361&projectId=2008476785396740097";
-
-    if (loadGsBtn && gsCover && gsFrameWrap) {
-      loadGsBtn.addEventListener("click", () => {
-        const iframe = document.createElement("iframe");
-        iframe.className = "gs-frame";
-        iframe.src = gsUrl;
-        iframe.loading = "lazy";
-        iframe.allowFullscreen = true;
-        iframe.referrerPolicy = "no-referrer";
-
-        gsFrameWrap.innerHTML = "";
-        gsFrameWrap.appendChild(iframe);
-      });
-    }
-
-    const compareRange = document.getElementById("compareRange");
-    const afterLayer = document.getElementById("afterLayer");
-    const handle = document.getElementById("handle");
-
-    if (compareRange && afterLayer && handle) {
-      compareRange.addEventListener("input", e => {
-        const value = e.target.value;
-        afterLayer.style.width = `${value}%`;
-        handle.style.left = `${value}%`;
-      });
-    }
-
-    const filterButtons = document.querySelectorAll(".filter");
-    const portfolioCards = document.querySelectorAll(".portfolio-card");
-
-    filterButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        filterButtons.forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
-
-        const filter = button.dataset.filter;
-
-        portfolioCards.forEach(card => {
-          const category = card.dataset.category || "";
-          if (filter === "all" || category.includes(filter)) card.classList.remove("hide");
-          else card.classList.add("hide");
+          portfolioCards.forEach(card => {
+            const category = card.dataset.category || "";
+            if (filter === "all" || category.includes(filter)) card.classList.remove("hide");
+            else card.classList.add("hide");
+          });
         });
       });
     });
   </script>
+
 </body>
 </html>
