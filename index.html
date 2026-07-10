@@ -1244,6 +1244,24 @@
       }
     }
 
+  
+    /* FIX: scroll-driven continuous crossfade */
+    .process-layer {
+      opacity: 0;
+      transform: scale(1.04);
+      transition: none !important;
+      will-change: opacity, transform;
+    }
+
+    .process-layer.show {
+      opacity: 1;
+    }
+
+    .process-step-text {
+      transition: none !important;
+      will-change: opacity, transform;
+    }
+
   </style>
 </head>
 
@@ -1707,23 +1725,49 @@
           storyBg.style.transform = `scale(${1.06 + progress * 0.22}) rotate(${progress * 1.4}deg)`;
           storyBg.style.filter = `brightness(${0.82 + progress * 0.24})`;
 
-          const stage = Math.min(4, Math.floor(progress * 5));
+          const stepCount = processLayers.length;
+          const scaled = progress * (stepCount - 1);
+          const activeIndex = Math.round(scaled);
 
           processLayers.forEach((layer, index) => {
-            if (layer) layer.classList.toggle("show", index === stage);
+            if (!layer) return;
+
+            const distance = Math.abs(scaled - index);
+            const opacity = clamp(1 - distance, 0, 1);
+            const scale = 1.04 - opacity * 0.04;
+
+            layer.style.opacity = opacity;
+            layer.style.transform = `scale(${scale})`;
+            layer.classList.toggle("show", opacity > 0.001);
           });
 
           processTexts.forEach((text, index) => {
-            if (text) text.classList.toggle("show", index === stage);
+            if (!text) return;
+
+            const distance = Math.abs(scaled - index);
+            const opacity = clamp(1 - distance * 1.35, 0, 1);
+            const y = 24 * clamp(distance, 0, 1);
+
+            text.style.opacity = opacity;
+            text.style.transform = `translateY(${y}px)`;
+            text.classList.toggle("show", opacity > 0.001);
           });
 
-          if (processBadge) processBadge.textContent = processLabels[stage];
+          if (processBadge) processBadge.textContent = processLabels[activeIndex];
           if (processProgress) processProgress.style.width = `${progress * 100}%`;
 
           workerDots.forEach((dot, index) => {
             if (!dot) return;
-            const shouldShow = stage === 0 || stage === 1 || (stage === 2 && index < 2);
-            dot.classList.toggle("show", shouldShow);
+
+            const workOpacity = Math.max(
+              clamp(1 - Math.abs(scaled - 0) * 1.2, 0, 1),
+              clamp(1 - Math.abs(scaled - 1) * 1.2, 0, 1),
+              index < 2 ? clamp(1 - Math.abs(scaled - 2) * 1.2, 0, 1) : 0
+            );
+
+            dot.style.opacity = workOpacity;
+            dot.style.transform = `translate(-50%, -50%) scale(${0.6 + workOpacity * 0.4})`;
+            dot.classList.toggle("show", workOpacity > 0.02);
           });
         }
 
