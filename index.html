@@ -661,7 +661,7 @@
     }
 
     .before-layer {
-      background-image: url("./assets/process_01.png");
+      background-image: url("./assets/process_04.png");
     }
 
     .after-layer {
@@ -791,8 +791,8 @@
       transform: skewX(-10deg);
     }
 
-    .thumb1 { background-image: url("./assets/process_04.png"); }
-    .thumb2 { background-image: url("./assets/process_01.png"); }
+    .thumb1 { background-image: url("./assets/portfolio_01.jpg"); }
+    .thumb2 { background-image: url("./assets/portfolio_02.jpg"); }
     .thumb3 { background-image: url("./assets/portfolio_03.jpg"); }
     .thumb4 { background-image: url("./assets/portfolio_04.jpg"); }
     .thumb5 { background-image: url("./assets/portfolio_05.jpg"); }
@@ -1059,6 +1059,189 @@
     .after-label {
       left: auto;
       right: 24px;
+    }
+
+  
+    /* FIX: compare section */
+    .compare-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .before-layer,
+    .after-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transform: none !important;
+    }
+
+    .before-layer {
+      background-image: url("./assets/process_01.png") !important;
+    }
+
+    .after-layer {
+      background-image: url("./assets/process_04.png") !important;
+      clip-path: inset(0 45% 0 0);
+      border-right: 0 !important;
+    }
+
+    .compare-label {
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    .before-label {
+      left: 24px;
+      right: auto;
+    }
+
+    .after-label {
+      left: auto;
+      right: 24px;
+    }
+
+    /* FIX: portfolio thumbnails */
+    .thumb1 { background-image: url("./assets/portfolio_01.jpg") !important; }
+    .thumb2 { background-image: url("./assets/portfolio_02.jpg") !important; }
+
+    /* FIX: full-screen scroll process story */
+    .story {
+      height: 560vh;
+      background: #05060a;
+    }
+
+    .story-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-height: 100vh;
+      overflow: hidden;
+      display: block;
+      padding: 0;
+      background: #05060a;
+    }
+
+    .story-bg,
+    .story-gridline {
+      z-index: 1;
+    }
+
+    .process-visual {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      border-radius: 0;
+      border: 0;
+      box-shadow: none;
+      overflow: hidden;
+      background: #05060a;
+    }
+
+    .process-layer {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .process-layer::after {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.62), rgba(0,0,0,0.22) 48%, rgba(0,0,0,0.42)),
+        linear-gradient(0deg, rgba(0,0,0,0.48), transparent 48%, rgba(0,0,0,0.16));
+    }
+
+    .process-copy {
+      position: relative;
+      z-index: 6;
+      width: min(560px, calc(100% - 48px));
+      max-width: 560px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 8vw;
+      pointer-events: none;
+    }
+
+    .process-copy .eyebrow,
+    .process-copy h2,
+    .process-copy > p,
+    .process-step-texts {
+      text-shadow: 0 10px 35px rgba(0,0,0,0.42);
+    }
+
+    .process-overlay {
+      z-index: 7;
+      left: 8vw;
+      right: 8vw;
+      bottom: 42px;
+    }
+
+    .worker-dot {
+      z-index: 8;
+    }
+
+    @media (max-width: 760px) {
+      .story {
+        height: 560vh !important;
+      }
+
+      .story-sticky {
+        position: sticky !important;
+        top: 0 !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        display: block !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .process-visual {
+        position: absolute !important;
+        inset: 0 !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      .process-copy {
+        width: calc(100% - 40px);
+        max-width: none;
+        min-height: 100vh;
+        margin: 0 20px;
+        justify-content: center;
+      }
+
+      .process-copy h2 {
+        font-size: 38px;
+      }
+
+      .process-copy > p {
+        font-size: 15px;
+      }
+
+      .process-step-texts {
+        min-height: 210px;
+      }
+
+      .process-overlay {
+        left: 20px;
+        right: 20px;
+        bottom: 24px;
+      }
+
+      .process-progress {
+        max-width: 150px;
+      }
     }
 
   </style>
