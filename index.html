@@ -660,12 +660,15 @@
       background-position: center;
     }
 
-    .before-layer { background-image: url("./assets/portfolio_02.jpg"); }
+    .before-layer {
+      background-image: url("./assets/process_01.png");
+    }
+
     .after-layer {
-      width: 55%;
+      width: 100%;
       overflow: hidden;
-      border-right: 3px solid #fff;
-      background-image: url("./assets/portfolio_01.jpg");
+      background-image: url("./assets/process_04.png");
+      clip-path: inset(0 45% 0 0);
     }
 
     .compare-overlay {
@@ -678,7 +681,6 @@
     .compare-label {
       position: absolute;
       top: 24px;
-      left: 24px;
       z-index: 5;
       padding: 10px 16px;
       border-radius: 999px;
@@ -687,6 +689,17 @@
       font-size: 13px;
       font-weight: 900;
     }
+
+    .before-label {
+      left: 24px;
+      right: auto;
+    }
+
+    .after-label {
+      left: auto;
+      right: 24px;
+    }
+
 
     #compareRange {
       position: absolute;
@@ -778,8 +791,8 @@
       transform: skewX(-10deg);
     }
 
-    .thumb1 { background-image: url("./assets/portfolio_01.jpg"); }
-    .thumb2 { background-image: url("./assets/portfolio_02.jpg"); }
+    .thumb1 { background-image: url("./assets/process_04.png"); }
+    .thumb2 { background-image: url("./assets/process_01.png"); }
     .thumb3 { background-image: url("./assets/portfolio_03.jpg"); }
     .thumb4 { background-image: url("./assets/portfolio_04.jpg"); }
     .thumb5 { background-image: url("./assets/portfolio_05.jpg"); }
@@ -1030,6 +1043,22 @@
 
     .hidden {
       display: none !important;
+    }
+
+  
+    .compare-label {
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    .before-label {
+      left: 24px;
+      right: auto;
+    }
+
+    .after-label {
+      left: auto;
+      right: 24px;
     }
 
   </style>
@@ -1283,13 +1312,14 @@
       <div class="compare-box reveal">
         <div class="before-layer">
           <div class="compare-overlay"></div>
-          <div class="compare-label">BEFORE</div>
         </div>
 
         <div class="after-layer" id="afterLayer">
           <div class="compare-overlay"></div>
-          <div class="compare-label">AFTER</div>
         </div>
+
+        <div class="compare-label before-label">BEFORE</div>
+        <div class="compare-label after-label">AFTER</div>
 
         <input id="compareRange" type="range" min="0" max="100" value="55">
         <div class="handle" id="handle"></div>
@@ -1578,7 +1608,8 @@
       if (compareRange && afterLayer && handle) {
         compareRange.addEventListener("input", e => {
           const value = e.target.value;
-          afterLayer.style.width = `${value}%`;
+          const hiddenRight = 100 - Number(value);
+          afterLayer.style.clipPath = `inset(0 ${hiddenRight}% 0 0)`;
           handle.style.left = `${value}%`;
         });
       }
